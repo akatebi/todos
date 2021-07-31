@@ -20,16 +20,17 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 		Complete: false,
 	}
 	ID := input.UserID
-	log.Printf("#### ID %v", relay.FromGlobalID(ID))
+	log.Printf("## AddTodo ## ID %v", ID)
 	if r.users[ID] == nil {
-		initUser(ID, []*model.Todo{})
+		userID := relay.FromGlobalID(ID).ID
+		initUser(userID, []*model.Todo{})
 	}
 	todos := r.todos[ID]
 	user := r.users[ID]
 	user.TotalCount++
-	log.Printf("#### User %v", *user)
+	log.Printf("## AddTodo ## User %v", *user)
 	r.todos[ID] = append(todos, todo)
-	log.Printf("#### Todos %v", todos)
+	log.Printf("## AddTodo ## Todos %v", todos)
 	cursor := *encodeCursor(len(todos))
 	// log.Printf("cursor %v", cursor)
 	payload := &model.AddTodoPayload{
@@ -211,16 +212,28 @@ func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model
 }
 
 // Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+func (r *Resolver) Mutation() generated.MutationResolver {
+	log.Printf("## MutationResolver ##")
+	return &mutationResolver{r}
+}
 
 // Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
+func (r *Resolver) Query() generated.QueryResolver {
+	log.Printf("## QueryResolver ##")
+	return &queryResolver{r}
+}
 
 // Todo returns generated.TodoResolver implementation.
-func (r *Resolver) Todo() generated.TodoResolver { return &todoResolver{r} }
+func (r *Resolver) Todo() generated.TodoResolver {
+	log.Printf("## TodoResolver ##")
+	return &todoResolver{r}
+}
 
 // User returns generated.UserResolver implementation.
-func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
+func (r *Resolver) User() generated.UserResolver {
+	log.Printf("## UserResolver ##")
+	return &userResolver{r}
+}
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

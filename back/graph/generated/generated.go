@@ -559,7 +559,60 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "graph/schema.graphql", Input: `input AddTodoInput {
+	{Name: "graph/schema.graphql", Input: `type Query {
+  user(id: String): User
+  node(
+    id: ID!
+  ): Node
+}
+
+type User implements Node {
+  id: ID!
+  userId: String!
+  todos(status: Status = ANY, 
+    after: String, first: Int,
+    before: String, last: Int): TodoConnection
+  totalCount: Int!
+  completedCount: Int!
+}
+
+interface Node {
+  id: ID!
+}
+
+type TodoConnection {
+  pageInfo: PageInfo!
+  edges: [TodoEdge]
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type TodoEdge {
+  node: Todo
+  cursor: String!
+}
+
+type Todo implements Node {
+  id: ID!
+  text: String!
+  complete: Boolean!
+}
+
+type Mutation {
+  addTodo(input: AddTodoInput!): AddTodoPayload
+  changeTodoStatus(input: ChangeTodoStatusInput!): ChangeTodoStatusPayload
+  markAllTodos(input: MarkAllTodosInput!): MarkAllTodosPayload
+  removeCompletedTodos(input: RemoveCompletedTodosInput!): RemoveCompletedTodosPayload
+  removeTodo(input: RemoveTodoInput!): RemoveTodoPayload
+  renameTodo(input: RenameTodoInput!): RenameTodoPayload
+}
+
+input AddTodoInput {
   text: String!
   userId: ID!
   clientMutationId: String
@@ -596,33 +649,6 @@ type MarkAllTodosPayload {
   clientMutationId: String
 }
 
-type Mutation {
-  addTodo(input: AddTodoInput!): AddTodoPayload
-  changeTodoStatus(input: ChangeTodoStatusInput!): ChangeTodoStatusPayload
-  markAllTodos(input: MarkAllTodosInput!): MarkAllTodosPayload
-  removeCompletedTodos(input: RemoveCompletedTodosInput!): RemoveCompletedTodosPayload
-  removeTodo(input: RemoveTodoInput!): RemoveTodoPayload
-  renameTodo(input: RenameTodoInput!): RenameTodoPayload
-}
-
-interface Node {
-  id: ID!
-}
-
-type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-  endCursor: String
-}
-
-type Query {
-  user(id: String): User
-  node(
-    id: ID!
-  ): Node
-}
-
 input RemoveCompletedTodosInput {
   userId: ID!
   clientMutationId: String
@@ -655,32 +681,6 @@ input RenameTodoInput {
 type RenameTodoPayload {
   todo: Todo!
   clientMutationId: String
-}
-
-type Todo implements Node {
-  id: ID!
-  text: String!
-  complete: Boolean!
-}
-
-type TodoConnection {
-  pageInfo: PageInfo!
-  edges: [TodoEdge]
-}
-
-type TodoEdge {
-  node: Todo
-  cursor: String!
-}
-
-type User implements Node {
-  id: ID!
-  userId: String!
-  todos(status: Status = ANY, 
-    after: String, first: Int,
-    before: String, last: Int): TodoConnection
-  totalCount: Int!
-  completedCount: Int!
 }
 
 enum Status {
@@ -3736,13 +3736,6 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 	switch obj := (obj).(type) {
 	case nil:
 		return graphql.Null
-	case model.Todo:
-		return ec._Todo(ctx, sel, &obj)
-	case *model.Todo:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._Todo(ctx, sel, obj)
 	case model.User:
 		return ec._User(ctx, sel, &obj)
 	case *model.User:
@@ -3750,6 +3743,13 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._User(ctx, sel, obj)
+	case model.Todo:
+		return ec._Todo(ctx, sel, &obj)
+	case *model.Todo:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Todo(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}

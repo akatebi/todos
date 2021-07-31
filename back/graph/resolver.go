@@ -22,9 +22,9 @@ var usersData = make(map[string]*model.User)
 var todosData = make(map[string][]*model.Todo)
 
 func initUser(userID string, todos []*model.Todo) {
-	log.Printf("##### userID = %v", userID)
+	log.Printf("## initUser ## userID = %v", userID)
 	ID := relay.ToGlobalID("User", userID)
-	log.Printf("##### ID = %v", ID)
+	log.Printf("## initUser ## ID = %v", ID)
 	usersData[ID] = &model.User{
 		ID:             ID,
 		UserID:         userID,
