@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/akatebi/todos/graph/model"
+	"github.com/graphql-go/relay"
 )
 
 // This file will not be regenerated automatically.
@@ -21,8 +22,9 @@ var usersData = make(map[string]*model.User)
 var todosData = make(map[string][]*model.Todo)
 
 func initUser(userID string, todos []*model.Todo) {
-	ID := userID
-	log.Printf("##### Global UserID = %v", ID)
+	log.Printf("##### userID = %v", userID)
+	ID := relay.ToGlobalID("User", userID)
+	log.Printf("##### ID = %v", ID)
 	usersData[ID] = &model.User{
 		ID:             ID,
 		UserID:         userID,

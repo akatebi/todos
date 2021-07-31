@@ -29,7 +29,7 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 	user.TotalCount++
 	log.Printf("#### User %v", *user)
 	r.todos[ID] = append(todos, todo)
-	log.Printf("### Todos %v", todos)
+	log.Printf("#### Todos %v", todos)
 	cursor := *encodeCursor(len(todos))
 	// log.Printf("cursor %v", cursor)
 	payload := &model.AddTodoPayload{
@@ -180,9 +180,9 @@ func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, erro
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
-	log.Printf("##### id %v", id)
+	log.Printf("#### id %v", id)
 	obj := relay.FromGlobalID(id)
-	log.Printf("Node %#v", obj)
+	log.Printf("#### Node %#v", obj)
 	if obj.Type == "User" {
 		return r.users[obj.ID], nil
 	} else if obj.Type == "Todo" {
