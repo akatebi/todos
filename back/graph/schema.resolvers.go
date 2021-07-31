@@ -21,6 +21,7 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 	}
 	ID := input.UserID
 	log.Printf("## AddTodo ## ID %v", ID)
+	log.Printf("## AddTodo ## input %v", relay.FromGlobalID(ID))
 	if r.users[ID] == nil {
 		userID := relay.FromGlobalID(ID).ID
 		initUser(userID, []*model.Todo{})
@@ -30,7 +31,9 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 	user.TotalCount++
 	log.Printf("## AddTodo ## User %v", *user)
 	r.todos[ID] = append(todos, todo)
-	log.Printf("## AddTodo ## Todos %v", todos)
+	for k, v := range r.todos[ID] {
+		log.Printf("## AddTodo ## Todos %v = %v", k, v)
+	}
 	cursor := *encodeCursor(len(todos))
 	// log.Printf("cursor %v", cursor)
 	payload := &model.AddTodoPayload{

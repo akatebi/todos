@@ -37,6 +37,9 @@ func initUser(userID string, todos []*model.Todo) {
 			usersData[ID].CompletedCount++
 		}
 	}
+	for k, v := range todosData[ID] {
+		log.Printf("## initUser ## Todos %v = %v", k, v)
+	}
 }
 
 // Initialize ...

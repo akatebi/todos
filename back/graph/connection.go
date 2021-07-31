@@ -22,7 +22,7 @@ func resolveTodoConnection(todosAll []*model.Todo, status *model.Status, after *
 		todos = todosAll
 	}
 	from, to, err := calcRange(todos, first, after)
-	log.Printf("from %d, to %d", from, to)
+	log.Printf("## resolveTodoConnection ## from %d, to %d", from, to)
 	if err != nil {
 		log.Println(err)
 		return nil, err
