@@ -20,7 +20,7 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 		Complete: false,
 	}
 	ID := input.UserID
-	log.Printf("#### ID %v", ID)
+	log.Printf("#### ID %v", relay.FromGlobalID(ID))
 	if r.users[ID] == nil {
 		initUser(ID, []*model.Todo{})
 	}
@@ -176,7 +176,7 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
-	return r.users[*id], nil
+	return r.users[relay.ToGlobalID("User", *id)], nil
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
@@ -207,7 +207,7 @@ func (r *userResolver) ID(ctx context.Context, obj *model.User) (string, error) 
 }
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
-	return resolveTodoConnection(r.todos[obj.UserID], status, after, first)
+	return resolveTodoConnection(r.todos[relay.ToGlobalID("User", obj.UserID)], status, after, first)
 }
 
 // Mutation returns generated.MutationResolver implementation.
