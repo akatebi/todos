@@ -25,16 +25,16 @@ func initUser(userID string, todos []*model.Todo) {
 	log.Printf("##### userID = %v", userID)
 	ID := relay.ToGlobalID("User", userID)
 	log.Printf("##### ID = %v", ID)
-	usersData[ID] = &model.User{
+	usersData[userID] = &model.User{
 		ID:             ID,
 		UserID:         userID,
 		TotalCount:     len(todos),
 		CompletedCount: 0,
 	}
-	todosData[ID] = todos
+	todosData[userID] = todos
 	for _, todo := range todos {
 		if todo.Complete == true {
-			usersData[ID].CompletedCount++
+			usersData[userID].CompletedCount++
 		}
 	}
 }
