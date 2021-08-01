@@ -207,42 +207,19 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 	return nil, fmt.Errorf("ID %v Not Found", id)
 }
 
-func (r *todoResolver) ID(ctx context.Context, obj *model.Todo) (string, error) {
-	return obj.ID, nil
-}
-
-func (r *userResolver) ID(ctx context.Context, obj *model.User) (string, error) {
-	return obj.ID, nil
-}
-
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
 	return resolveTodoConnection(r.todos[relay.ToGlobalID("User", obj.UserID)], status, after, first)
 }
 
 // Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver {
-	log.Printf("## MutationResolver ##")
-	return &mutationResolver{r}
-}
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver {
-	return &queryResolver{r}
-}
-
-// Todo returns generated.TodoResolver implementation.
-func (r *Resolver) Todo() generated.TodoResolver {
-	log.Printf("## TodoResolver ## %v", r)
-	return &todoResolver{r}
-}
+func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 // User returns generated.UserResolver implementation.
-func (r *Resolver) User() generated.UserResolver {
-	log.Printf("## UserResolver ## %v", r)
-	return &userResolver{r}
-}
+func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-type todoResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }

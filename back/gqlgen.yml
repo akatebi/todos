@@ -58,11 +58,6 @@ models:
   
   User:
     fields:
-      id:
-        resolver: true
       todos:
         resolver: true
-  Todo:
-    fields:
-      id:
-        resolver: true
+  
