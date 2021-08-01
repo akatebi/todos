@@ -55,10 +55,9 @@ func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.Cha
 	todos := r.todos[ID]
 	user := r.users[ID]
 	var payload *model.ChangeTodoStatusPayload
-	ID = relay.FromGlobalID(input.ID).ID
 	for _, todo := range todos {
-		if todo.ID == ID {
-			// log.Printf("Status Todo %#v", todo)
+		if todo.ID == input.ID {
+			log.Printf("Status Todo %#v", todo)
 			if todo.Complete != input.Complete {
 				if input.Complete == true {
 					user.CompletedCount++
@@ -75,7 +74,7 @@ func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.Cha
 			break
 		}
 	}
-	log.Printf("Status payload %#v, %#v", payload.Todo, payload.User)
+	log.Printf("Status payload %#v", payload)
 	return payload, nil
 }
 
@@ -209,7 +208,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 }
 
 func (r *todoResolver) ID(ctx context.Context, obj *model.Todo) (string, error) {
-	return relay.ToGlobalID("Todo", obj.ID), nil
+	return obj.ID, nil
 }
 
 func (r *userResolver) ID(ctx context.Context, obj *model.User) (string, error) {
@@ -228,15 +227,12 @@ func (r *Resolver) Mutation() generated.MutationResolver {
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver {
-	for k, v := range r.users {
-		log.Printf("## QueryResolver ## %v = %v", k, v)
-	}
 	return &queryResolver{r}
 }
 
 // Todo returns generated.TodoResolver implementation.
 func (r *Resolver) Todo() generated.TodoResolver {
-	log.Printf("## TodoResolver ##")
+	log.Printf("## TodoResolver ## %v", r)
 	return &todoResolver{r}
 }
 
