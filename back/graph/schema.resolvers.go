@@ -201,7 +201,8 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 }
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
-	return resolveTodoConnection(r.todos[relay.ToGlobalID("User", obj.UserID)], status, after, first)
+	log.Printf("## Todos ## %#v", obj)
+	return resolveTodoConnection(r.todos[obj.ID], status, after, first)
 }
 
 // Mutation returns generated.MutationResolver implementation.
