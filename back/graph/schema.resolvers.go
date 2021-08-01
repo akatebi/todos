@@ -22,10 +22,6 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 	ID := input.UserID
 	log.Printf("## AddTodo ## ID %v", ID)
 	log.Printf("## AddTodo ## input %v", relay.FromGlobalID(ID))
-	// if r.users[ID] == nil {
-	// userID := relay.FromGlobalID(ID).ID
-	// r.initialize(userID)
-	// }
 	todos := r.todos[ID]
 	user := r.users[ID]
 	user.TotalCount++
