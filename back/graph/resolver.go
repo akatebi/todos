@@ -18,32 +18,36 @@ type Resolver struct {
 	todos map[string][]*model.Todo
 }
 
-var usersData = make(map[string]*model.User)
-var todosData = make(map[string][]*model.Todo)
-
-func initUser(userID string, todos []*model.Todo) {
+func (r *Resolver) initUser(userID string, todos []*model.Todo) {
 	log.Printf("## initUser ## userID = %v", userID)
 	ID := relay.ToGlobalID("User", userID)
 	log.Printf("## initUser ## ID = %v", ID)
-	usersData[ID] = &model.User{
+	if r.users[ID] == nil {
+		r.users = make(map[string]*model.User)
+		r.todos = make(map[string][]*model.Todo)
+	}
+	r.users[ID] = &model.User{
 		ID:             ID,
 		UserID:         userID,
 		TotalCount:     len(todos),
 		CompletedCount: 0,
 	}
-	todosData[ID] = todos
+	r.todos[ID] = todos
 	for _, todo := range todos {
 		if todo.Complete == true {
-			usersData[ID].CompletedCount++
+			r.users[ID].CompletedCount++
 		}
 	}
-	for k, v := range todosData[ID] {
+	for k, v := range r.users {
+		log.Printf("## initUser ## Users %v = %v", k, v)
+	}
+	for k, v := range r.todos[ID] {
 		log.Printf("## initUser ## Todos %v = %v", k, v)
 	}
 }
 
 // Initialize ...
-func Initialize() *Resolver {
+func (r *Resolver) initalize(userID string) *Resolver {
 	todos := []*model.Todo{
 		{
 			ID:       newID(),
@@ -56,8 +60,8 @@ func Initialize() *Resolver {
 			Complete: false,
 		},
 	}
-	initUser("me@gmail.com", todos)
-	return &Resolver{usersData, todosData}
+	r.initUser(userID, todos)
+	return r
 }
 
 var idCounter int

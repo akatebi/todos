@@ -22,10 +22,10 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 	ID := input.UserID
 	log.Printf("## AddTodo ## ID %v", ID)
 	log.Printf("## AddTodo ## input %v", relay.FromGlobalID(ID))
-	if r.users[ID] == nil {
-		userID := relay.FromGlobalID(ID).ID
-		initUser(userID, []*model.Todo{})
-	}
+	// if r.users[ID] == nil {
+	// userID := relay.FromGlobalID(ID).ID
+	// r.initialize(userID)
+	// }
 	todos := r.todos[ID]
 	user := r.users[ID]
 	user.TotalCount++
@@ -180,7 +180,13 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
-	return r.users[relay.ToGlobalID("User", *id)], nil
+	ID := relay.ToGlobalID("User", *id)
+	log.Printf("## User ## %v", ID)
+	if r.users[ID] == nil {
+		r.initalize(*id)
+		log.Printf("## User ## %v", r.users[ID])
+	}
+	return r.users[ID], nil
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
@@ -222,7 +228,9 @@ func (r *Resolver) Mutation() generated.MutationResolver {
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver {
-	log.Printf("## QueryResolver ##")
+	for k, v := range r.users {
+		log.Printf("## QueryResolver ## %v = %v", k, v)
+	}
 	return &queryResolver{r}
 }
 
