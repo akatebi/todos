@@ -107,16 +107,18 @@ func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model
 	todos := r.todos[input.UserID]
 	deletedTodoIds := []string{}
 	keepTodos := []*model.Todo{}
+	user := r.users[input.UserID]
 	for _, todo := range todos {
 		if todo.Complete == true {
 			deletedTodoIds = append(deletedTodoIds, todo.ID)
+			user.CompletedCount--
+			user.TotalCount--
 		} else {
 			keepTodos = append(keepTodos, todo)
 		}
 	}
 	r.todos[input.UserID] = keepTodos
 	log.Printf("## RemoveCompletedTodos ##, %#v", keepTodos)
-	user := r.users[input.UserID]
 	payload := model.RemoveCompletedTodosPayload{
 		DeletedTodoIds:   deletedTodoIds,
 		User:             user,
