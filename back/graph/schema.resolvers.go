@@ -32,7 +32,7 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 	log.Printf("## AddTodo ## User %v", *user)
 	r.todos[ID] = append(todos, todo)
 	for k, v := range r.todos[ID] {
-		log.Printf("## AddTodo ## Todos %v = %v", k, v)
+		log.Printf("## AddTodo ## Todos %v = %v, %v", k, v, ID)
 	}
 	cursor := *encodeCursor(len(todos))
 	// log.Printf("cursor %v", cursor)
@@ -207,7 +207,7 @@ func (r *todoResolver) ID(ctx context.Context, obj *model.Todo) (string, error) 
 }
 
 func (r *userResolver) ID(ctx context.Context, obj *model.User) (string, error) {
-	return relay.ToGlobalID("User", obj.ID), nil
+	return obj.ID, nil
 }
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
@@ -234,7 +234,7 @@ func (r *Resolver) Todo() generated.TodoResolver {
 
 // User returns generated.UserResolver implementation.
 func (r *Resolver) User() generated.UserResolver {
-	log.Printf("## UserResolver ##")
+	log.Printf("## UserResolver ## %v", r)
 	return &userResolver{r}
 }
 
