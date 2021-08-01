@@ -108,8 +108,7 @@ func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model
 	deletedTodoIds := []string{}
 	for i, todo := range todos {
 		if todo.Complete == true {
-			id := relay.ToGlobalID("Todo", todo.ID)
-			deletedTodoIds = append(deletedTodoIds, id)
+			deletedTodoIds = append(deletedTodoIds, todo.ID)
 			r.todos[input.UserID] = append(todos[:i], todos[i+1:]...)
 		}
 	}
@@ -123,11 +122,10 @@ func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model
 }
 
 func (r *mutationResolver) RemoveTodo(ctx context.Context, input model.RemoveTodoInput) (*model.RemoveTodoPayload, error) {
-	ID := relay.FromGlobalID(input.ID).ID
 	todos := r.todos[input.UserID]
 	index := -1
 	for i, todo := range todos {
-		if todo.ID == ID {
+		if todo.ID == input.ID {
 			index = i
 			r.todos[input.UserID] = append(todos[:i], todos[i+1:]...)
 			if todo.Complete == true {
@@ -150,13 +148,12 @@ func (r *mutationResolver) RemoveTodo(ctx context.Context, input model.RemoveTod
 }
 
 func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTodoInput) (*model.RenameTodoPayload, error) {
-	ID := relay.FromGlobalID(input.ID).ID
 	var renamed *model.Todo
 	index := -1
 	for user := range r.users {
 		todos := r.todos[user]
 		for _, todo := range todos {
-			if todo.ID == ID {
+			if todo.ID == input.ID {
 				todo.Text = input.Text
 				renamed = todo
 				index = 1
