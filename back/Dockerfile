@@ -8,5 +8,7 @@ WORKDIR /back
 
 RUN GO BUILD -o main .
 
+EXPOSE 8080
+
 CMD ["/back/main"]
 
