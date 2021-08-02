@@ -18,10 +18,9 @@ type Resolver struct {
 	todos map[string][]*model.Todo
 }
 
-func (r *Resolver) initUser(userID string, todos []*model.Todo) {
-	log.Printf("## initUser ## userID = %v", userID)
+// Initialize ...
+func (r *Resolver) initalize(userID string) *Resolver {
 	ID := relay.ToGlobalID("User", userID)
-	log.Printf("## initUser ## ID = %v", ID)
 	if r.users[ID] == nil {
 		r.users = make(map[string]*model.User)
 		r.todos = make(map[string][]*model.Todo)
@@ -29,26 +28,10 @@ func (r *Resolver) initUser(userID string, todos []*model.Todo) {
 	r.users[ID] = &model.User{
 		ID:             ID,
 		UserID:         userID,
-		TotalCount:     len(todos),
+		TotalCount:     0,
 		CompletedCount: 0,
 	}
-	r.todos[ID] = todos
-	for _, todo := range todos {
-		if todo.Complete == true {
-			r.users[ID].CompletedCount++
-		}
-	}
-	for k, v := range r.users {
-		log.Printf("## initUser ## Users %v = %v", k, v)
-	}
-	for k, v := range r.todos[ID] {
-		log.Printf("## initUser ## Todos %v = %v", k, v)
-	}
-}
-
-// Initialize ...
-func (r *Resolver) initalize(userID string) *Resolver {
-	todos := []*model.Todo{
+	r.todos[ID] = []*model.Todo{
 		{
 			ID:       newID(),
 			Text:     "Taste JavaScript",
@@ -60,7 +43,18 @@ func (r *Resolver) initalize(userID string) *Resolver {
 			Complete: false,
 		},
 	}
-	r.initUser(userID, todos)
+	for _, todo := range r.todos[ID] {
+		r.users[ID].TotalCount++
+		if todo.Complete == true {
+			r.users[ID].CompletedCount++
+		}
+	}
+	for k, v := range r.users {
+		log.Printf("## initUser ## Users %v = %v", k, v)
+	}
+	for k, v := range r.todos[ID] {
+		log.Printf("## initUser ## Todos %v = %v", k, v)
+	}
 	return r
 }
 
