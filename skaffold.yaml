@@ -1,0 +1,26 @@
+apiVersion: skaffold/v2beta17
+kind: Config
+metadata:
+  name: todos
+build:
+  artifacts:
+  - image: back
+    context: back
+    docker:
+      dockerfile: Dockerfile
+  - image: front
+    context: front
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - back/deployment.yaml
+    - front/deployment.yaml
+portForward:
+- resourceType: service
+  resourceName: back
+  port: 8080
+- resourceType: service
+  resourceName: front
+  port: 3000

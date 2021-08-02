@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM golang:1.16
 
 RUN mkdir /back
 
@@ -6,7 +6,7 @@ ADD . /back
 
 WORKDIR /back
 
-RUN GO BUILD -o main .
+RUN go build -o main 
 
 EXPOSE 8080
 
