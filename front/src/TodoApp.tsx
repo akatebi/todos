@@ -36,7 +36,6 @@ function TodoApp(props: Props) {
 
   const handleTextInputSave = useCallback(
     (text: string) => {
-      console.log("#### user", user)
       addTodo(text, user.id);
     },
     [addTodo, user.id]
