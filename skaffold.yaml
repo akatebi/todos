@@ -17,6 +17,7 @@ deploy:
     manifests:
     - back/deployment.yaml
     - front/deployment.yaml
+    - db/statefulSet.yaml
 portForward:
 - resourceType: service
   resourceName: back
