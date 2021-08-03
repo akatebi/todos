@@ -68,8 +68,3 @@ func newID() string {
 	}
 	return string(json)
 }
-
-func init() {
-	log.Printf("######## INIT PG HERE ########")
-
-}
