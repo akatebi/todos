@@ -21,18 +21,29 @@ func InitDB() *sql.DB {
 	// conn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	// open database
 	log.Printf("### MYSQL ###")
-	const conn = "username@password@tcp(mysql:3306)/test"
+	const conn = "root:password@tcp(mysql:3306)/"
 	db, err := sql.Open("mysql", conn)
 	if err != nil {
 		panic(err)
 	}
 	log.Printf("### db ###, %v", db)
-	// close database
-	fmt.Println("Connected!")
-	return db
-	// _, err = db.Exec("Create DATABASE todos")
-	// if err != nil {
-	// panic(err)
-	// }
 
+	_, err = db.Exec("CREATE DATABASE IF NOT EXISTS todos")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = db.Exec("USE todos")
+	if err != nil {
+		panic(err)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println("Connected!")
+
+	return db
 }
