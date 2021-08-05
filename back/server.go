@@ -15,6 +15,11 @@ import (
 const defaultPort = "8080"
 
 func main() {
+
+	db := graph.InitDB()
+
+	defer db.Close()
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
