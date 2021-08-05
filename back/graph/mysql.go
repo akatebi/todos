@@ -45,5 +45,21 @@ func InitDB() *sql.DB {
 
 	fmt.Println("Connected!")
 
+	_, err = db.Exec(`DROP TABLE IF EXISTS Users`)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// Create the user table
+	_, err = db.Exec(`CREATE TABLE Users (
+		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		UserID TEXT,
+		TotalCount INT,
+		CompletedCount INT)`)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
 	return db
 }
