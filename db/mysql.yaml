@@ -25,7 +25,7 @@ spec:
         app: mysql
     spec:
       containers:
-      - image: mysql:5.6
+      - image: mysql:8
         name: mysql
         env:
           # Use secret in real usage
@@ -49,7 +49,7 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: manual
+  # storageClassName: manual
   capacity:
     storage: 20Gi
   accessModes:
@@ -62,7 +62,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql-pv-claim
 spec:
-  storageClassName: manual
+  # storageClassName: manual
   accessModes:
     - ReadWriteOnce
   resources:

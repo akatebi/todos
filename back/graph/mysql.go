@@ -28,6 +28,13 @@ func InitDB() *sql.DB {
 	}
 	log.Printf("### db ###, %v", db)
 
+	err = db.Ping()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println("Connected!")
+
 	_, err = db.Exec("CREATE DATABASE IF NOT EXISTS todos")
 	if err != nil {
 		panic(err)
@@ -37,13 +44,6 @@ func InitDB() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
-
-	err = db.Ping()
-	if err != nil {
-		panic(err.Error())
-	}
-
-	fmt.Println("Connected!")
 
 	_, err = db.Exec(`DROP TABLE IF EXISTS Users`)
 	if err != nil {
