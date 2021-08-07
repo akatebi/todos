@@ -6,6 +6,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/akatebi/todos/graph/generated"
 	"github.com/akatebi/todos/graph/model"
@@ -36,7 +37,17 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	res, err := Db.Query("Select * FROM Users WHERE UserID=? LIMIT 1", *id)
+	ErrorCheck(err)
+	log.Printf("User %v", res)
+	for res.Next() {
+		var UserID string
+		var id, TotalCount, CompletedCount uint
+		err = res.Scan(&id, &UserID, &CompletedCount, &TotalCount)
+		ErrorCheck(err)
+		fmt.Println(id, UserID, CompletedCount, TotalCount)
+	}
+	return &model.User{}, nil
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
