@@ -26,23 +26,35 @@ func InitDB() *sql.DB {
 	fmt.Println("### Connected! ###")
 
 	cmds := []string{
-		"DROP DATABASE IF EXISTS app",
-		"CREATE DATABASE IF NOT EXISTS app",
-		"USE app",
+		"DROP DATABASE IF EXISTS Todos",
+		"CREATE DATABASE IF NOT EXISTS Todos",
+		"USE Todos",
 		`CREATE TABLE Users (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			UserID TEXT,
+			UserID VARCHAR(32),
 			TotalCount INT,
-			CompletedCount INT)`,
+			CompletedCount INT
+		) ENGINE=INNODB`,
+		`CREATE TABLE Todos (
+			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			Users_id INT,
+			Text VARCHAR(32),
+			Completed INT,
+			FOREIGN KEY (Users_id)
+				REFERENCES Users(id)
+				ON DELETE CASCADE
+		) ENGINE=INNODB`,
 	}
 
 	for i, cmd := range cmds {
-		log.Printf("%v : %v", i, cmd)
 		_, err = db.Exec(cmd)
 		if err != nil {
+			log.Printf("%v : %v", i, cmd)
 			panic(err)
 		}
 	}
+
+	Db = db
 
 	return db
 }
