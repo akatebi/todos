@@ -7,8 +7,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/akatebi/todos/graph/database"
 	"github.com/akatebi/todos/graph/generated"
-	"github.com/akatebi/todos/graph/memory"
 	"github.com/rs/cors"
 )
 
@@ -16,8 +16,8 @@ const defaultPort = "8080"
 
 func main() {
 
-	// db := database.InitDB()
-	// defer db.Close()
+	db := database.InitDB()
+	defer db.Close()
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -29,7 +29,7 @@ func main() {
 		AllowCredentials: true,
 	})
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &memory.Resolver{}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &database.Resolver{}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", CORS.Handler(srv))
