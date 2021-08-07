@@ -1,4 +1,4 @@
-package graph
+package memory
 
 import (
 	"encoding/base64"
