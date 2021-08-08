@@ -20,17 +20,8 @@ func (r *userResolver) resolveTodoConnection(
 
 	Users_id, err := strconv.Atoi(Users_ids)
 	Panic(err)
-	var afterd int
-	if after == nil {
-		afterd = 0
-	} else {
-		var dst []byte
-		after_byte, err := base64.StdEncoding.DecodeString(*after)
-		Panic(err)
-		afterd, err = base64.StdEncoding.Decode(dst, after_byte)
-		Panic(err)
-	}
-	rows, err := r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? LIMIT ?", Users_id, afterd, *first)
+
+	rows, err := r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? LIMIT ?", Users_id, decodeCursor(after), *first)
 	Panic(err)
 	log.Printf("Todos %v", rows)
 
@@ -114,4 +105,18 @@ func edges(todos []*model.Todo, from int, to int) []*model.TodoEdge {
 func encodeCursor(i int) *string {
 	cursor := string(base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("cursor%d", i+1))))
 	return &cursor
+}
+
+func decodeCursor(cursor *string) int {
+	if cursor == nil {
+		return 0
+	} else {
+		var id int
+		var dst []byte
+		src, err := base64.StdEncoding.DecodeString(*cursor)
+		Panic(err)
+		id, err = base64.StdEncoding.Decode(dst, src)
+		Panic(err)
+		return id
+	}
 }
