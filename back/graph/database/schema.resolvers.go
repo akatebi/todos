@@ -10,6 +10,7 @@ import (
 
 	"github.com/akatebi/todos/graph/generated"
 	"github.com/akatebi/todos/graph/model"
+	"github.com/graphql-go/relay"
 )
 
 func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error) {
@@ -40,22 +41,27 @@ func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, erro
 	res, err := r.db.Query("Select * FROM Users WHERE UserID=? LIMIT 1", *id)
 	ErrorCheck(err)
 	log.Printf("User %v", res)
+	var UserID string
+	var ID, TotalCount, CompletedCount int
 	for res.Next() {
-		var UserID string
-		var id, TotalCount, CompletedCount uint
-		err = res.Scan(&id, &UserID, &CompletedCount, &TotalCount)
+		err = res.Scan(&ID, &UserID, &CompletedCount, &TotalCount)
 		ErrorCheck(err)
-		fmt.Println(id, UserID, CompletedCount, TotalCount)
+		fmt.Println(ID, UserID, CompletedCount, TotalCount)
 	}
-	return &model.User{}, nil
+	return &model.User{
+		ID:             relay.ToGlobalID("User", NewID(ID)),
+		UserID:         UserID,
+		TotalCount:     TotalCount,
+		CompletedCount: CompletedCount,
+	}, nil
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
-	panic(fmt.Errorf("not implemented"))
+	panic(fmt.Errorf("Node not implemented"))
 }
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	panic(fmt.Errorf("Todos not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

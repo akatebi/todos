@@ -3,6 +3,7 @@ package database
 //  k exec -it mysql-69567fc988-r54x2 -c mysql -- bash
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -41,8 +42,8 @@ func (r *Resolver) Open() {
 		`CREATE TABLE Users (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			UserID VARCHAR(32),
-			TotalCount INT UNSIGNED DEFAULT 0,
-			CompletedCount INT UNSIGNED DEFAULT 0
+			TotalCount INT DEFAULT 0,
+			CompletedCount INT DEFAULT 0
 		) ENGINE=INNODB`,
 		`CREATE TABLE Todos (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -91,4 +92,12 @@ func ErrorCheck(err error) {
 	if err != nil {
 		panic(err.Error())
 	}
+}
+
+func NewID(id int) string {
+	json, err := json.Marshal(id)
+	if err != nil {
+		panic(err)
+	}
+	return string(json)
 }
