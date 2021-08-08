@@ -40,7 +40,7 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
 	rows, err := r.db.Query("Select * FROM Users WHERE UserID=? LIMIT 1", *id)
 	Panic(err)
-	log.Printf("User %v", res)
+	log.Printf("User %v", rows)
 	var UserID string
 	var ID, TotalCount, CompletedCount int
 	for rows.Next() {
@@ -63,7 +63,9 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 }
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
-	panic(fmt.Errorf("Todos not implemented"))
+	log.Printf("Todos")
+	Users_id := relay.FromGlobalID(obj.ID).ID
+	return r.resolveTodoConnection(Users_id, status, after, first, before, last)
 }
 
 // Mutation returns generated.MutationResolver implementation.

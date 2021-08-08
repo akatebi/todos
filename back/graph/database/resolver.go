@@ -75,11 +75,20 @@ func (r *Resolver) Open() {
 
 	stmt, e = db.Prepare("INSERT INTO Todos(Users_id, Text, Completed) VALUES(?,?,?)")
 	Panic(e)
+
 	res, e = stmt.Exec(Users_id, "Taste JavaScript", true)
 	Panic(e)
 	id, e := res.LastInsertId()
+	Panic(e)
 	log.Printf("Insert id %v", id)
+
 	res, e = stmt.Exec(Users_id, "Buy a unicorn", false)
+	Panic(e)
+	id, e = res.LastInsertId()
+	Panic(e)
+	log.Printf("Insert id %v", id)
+
+	res, e = stmt.Exec(Users_id, "Get Customer", false)
 	Panic(e)
 	id, e = res.LastInsertId()
 	Panic(e)
