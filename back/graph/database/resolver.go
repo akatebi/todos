@@ -94,7 +94,7 @@ func ErrorCheck(err error) {
 	}
 }
 
-func NewID(id int) string {
+func ToString(id int) string {
 	json, err := json.Marshal(id)
 	if err != nil {
 		panic(err)
