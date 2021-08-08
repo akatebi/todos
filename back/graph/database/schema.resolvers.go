@@ -37,7 +37,7 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
-	res, err := Db.Query("Select * FROM Users WHERE UserID=? LIMIT 1", *id)
+	res, err := r.db.Query("Select * FROM Users WHERE UserID=? LIMIT 1", *id)
 	ErrorCheck(err)
 	log.Printf("User %v", res)
 	for res.Next() {

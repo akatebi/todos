@@ -16,9 +16,6 @@ const defaultPort = "8080"
 
 func main() {
 
-	db := database.InitDB()
-	defer db.Close()
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
@@ -29,7 +26,11 @@ func main() {
 		AllowCredentials: true,
 	})
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &database.Resolver{}}))
+	resolver := &database.Resolver{}
+	resolver.Open()
+	defer resolver.Close()
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", CORS.Handler(srv))
