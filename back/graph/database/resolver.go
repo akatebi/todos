@@ -31,7 +31,7 @@ func (r *Resolver) Open() {
 	log.Printf("### db ###, %v", db)
 
 	err = db.Ping()
-	ErrorCheck(err)
+	Panic(err)
 
 	fmt.Println("### Connected! ###")
 
@@ -66,29 +66,29 @@ func (r *Resolver) Open() {
 
 	UserID := "me@gmail.com"
 	stmt, e := db.Prepare("INSERT INTO Users(UserID) VALUES(?)")
-	ErrorCheck(e)
+	Panic(e)
 	res, e := stmt.Exec(UserID)
-	ErrorCheck(e)
+	Panic(e)
 	Users_id, e := res.LastInsertId()
-	ErrorCheck(e)
+	Panic(e)
 	log.Printf("Insert Users_id %v", Users_id)
 
 	stmt, e = db.Prepare("INSERT INTO Todos(Users_id, Text, Completed) VALUES(?,?,?)")
-	ErrorCheck(e)
+	Panic(e)
 	res, e = stmt.Exec(Users_id, "Taste JavaScript", true)
-	ErrorCheck(e)
+	Panic(e)
 	id, e := res.LastInsertId()
 	log.Printf("Insert id %v", id)
 	res, e = stmt.Exec(Users_id, "Buy a unicorn", false)
-	ErrorCheck(e)
+	Panic(e)
 	id, e = res.LastInsertId()
-	ErrorCheck(e)
+	Panic(e)
 	log.Printf("Insert id %v", id)
 
 	r.db = db
 }
 
-func ErrorCheck(err error) {
+func Panic(err error) {
 	if err != nil {
 		panic(err.Error())
 	}
