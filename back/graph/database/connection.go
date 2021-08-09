@@ -102,21 +102,13 @@ func edges(todos []*model.Todo, from int, to int) []*model.TodoEdge {
 	return edges
 }
 
-func encodeCursor(i int) *string {
-	cursor := string(base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("cursor%d", i+1))))
+func encodeCursor(id int) *string {
+	cursor := string(base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(id))))
 	return &cursor
 }
 
 func decodeCursor(cursor *string) int {
-	if cursor == nil {
-		return 0
-	} else {
-		var id int
-		var dst []byte
-		src, err := base64.StdEncoding.DecodeString(*cursor)
-		Panic(err)
-		id, err = base64.StdEncoding.Decode(dst, src)
-		Panic(err)
-		return id
-	}
+	sDec, _ := base64.StdEncoding.DecodeString(*cursor)
+	id, _ := strconv.Atoi(string(sDec))
+	return id
 }
