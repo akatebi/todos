@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 
 	"github.com/akatebi/todos/graph/model"
 	"github.com/graphql-go/relay"
@@ -31,76 +30,45 @@ func (r *userResolver) resolveTodoConnection(
 	Panic(err)
 	log.Printf("Todos %v", rows)
 
-	var todos []*model.Todo
+	var edges []*model.TodoEdge
+	i := 0
+	var StartCursor, EndCursor *string
 	for rows.Next() {
 		var ID, Users_id int
 		var Text string
 		var Complete bool
+		fmt.Printf("rows: %v\n", rows)
 		err = rows.Scan(&ID, &Users_id, &Text, &Complete)
 		Panic(err)
+		if i == 0 {
+			StartCursor = encodeCursor(ID)
+		} else {
+			EndCursor = encodeCursor(ID)
+		}
+		i += 1
 		fmt.Println(ID, Users_id, Text, Complete)
-		todos = append(todos, &model.Todo{
-			ID:       relay.ToGlobalID("Todo", strconv.Itoa(ID)),
-			Text:     Text,
-			Complete: Complete,
-		})
+		edge := &model.TodoEdge{
+			Cursor: *encodeCursor(ID),
+			Node: &model.Todo{
+				ID:       relay.ToGlobalID("Todo", strconv.Itoa(ID)),
+				Text:     Text,
+				Complete: Complete,
+			},
+		}
+		edges = append(edges, edge)
 	}
 	Panic(rows.Err())
 	rows.Close()
-	/*
-		from, to, err := calcRange(todos, first, after)
-		log.Printf("## resolveTodoConnection ## from %d, to %d", from, to)
-		if err != nil {
-			log.Println(err)
-			return nil, err
-		}
-		todoConnection := model.TodoConnection{
-			PageInfo: &model.PageInfo{
-				StartCursor:     encodeCursor(from),
-				EndCursor:       encodeCursor(to - 1),
-				HasNextPage:     to < len(todos),
-				HasPreviousPage: from < to,
-			},
-			Edges: edges(todos, from, to),
-		}
-		return &todoConnection, nil
-	*/
-	return &model.TodoConnection{}, nil
-}
-
-func calcRange(todos []*model.Todo, first *int, after *string) (int, int, error) {
-	from := 0
-	if after != nil {
-		b, err := base64.StdEncoding.DecodeString(*after)
-		if err != nil {
-			return 0, 0, err
-		}
-		i, err := strconv.Atoi(strings.TrimPrefix(string(b), "cursor"))
-		if err != nil {
-			return 0, 0, err
-		}
-		from = i
+	todoConnection := model.TodoConnection{
+		PageInfo: &model.PageInfo{
+			StartCursor:     StartCursor,
+			EndCursor:       EndCursor,
+			HasNextPage:     true,
+			HasPreviousPage: true,
+		},
+		Edges: edges,
 	}
-	to := len(todos)
-	if first != nil {
-		to = from + *first
-		if to > len(todos) {
-			to = len(todos)
-		}
-	}
-	return from, to, nil
-}
-
-func edges(todos []*model.Todo, from int, to int) []*model.TodoEdge {
-	edges := make([]*model.TodoEdge, to-from)
-	for i := range edges {
-		todo := *todos[from+i]
-		edges[i] = &model.TodoEdge{
-			Cursor: *encodeCursor(from + i),
-			Node:   &todo,
-		}
-	}
-	return edges
+	return &todoConnection, nil
 }
 
 func encodeCursor(id int) *string {
