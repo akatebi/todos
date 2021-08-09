@@ -49,7 +49,7 @@ func (r *Resolver) Open() {
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			Users_id INT,
 			Text VARCHAR(32),
-			Completed BOOLEAN DEFAULT false,
+			Complete BOOLEAN DEFAULT false,
 			FOREIGN KEY (Users_id)
 				REFERENCES Users(id)
 				ON DELETE CASCADE
@@ -73,7 +73,7 @@ func (r *Resolver) Open() {
 	Panic(e)
 	log.Printf("Insert Users_id %v", Users_id)
 
-	stmt, e = db.Prepare("INSERT INTO Todos(Users_id, Text, Completed) VALUES(?,?,?)")
+	stmt, e = db.Prepare("INSERT INTO Todos(Users_id, Text, Complete) VALUES(?,?,?)")
 	Panic(e)
 
 	res, e = stmt.Exec(Users_id, "Taste JavaScript", true)

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"encoding/base64"
 	"fmt"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/akatebi/todos/graph/model"
+	"github.com/graphql-go/relay"
 )
 
 func (r *userResolver) resolveTodoConnection(
@@ -20,33 +22,32 @@ func (r *userResolver) resolveTodoConnection(
 
 	Users_id, err := strconv.Atoi(Users_ids)
 	Panic(err)
-
-	rows, err := r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? LIMIT ?", Users_id, decodeCursor(after), *first)
+	var rows *sql.Rows
+	if *status == model.StatusAny {
+		rows, err = r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? LIMIT ?", Users_id, decodeCursor(after), *first)
+	} else {
+		rows, err = r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? AND Complete = ? LIMIT ?", Users_id, decodeCursor(after), *status == model.StatusCompleted, *first)
+	}
 	Panic(err)
 	log.Printf("Todos %v", rows)
 
+	var todos []*model.Todo
 	for rows.Next() {
 		var ID, Users_id int
 		var Text string
-		var Completed bool
-		err = rows.Scan(&ID, &Users_id, &Text, &Completed)
+		var Complete bool
+		err = rows.Scan(&ID, &Users_id, &Text, &Complete)
 		Panic(err)
-		fmt.Println(ID, Users_id, Text, Completed)
+		fmt.Println(ID, Users_id, Text, Complete)
+		todos = append(todos, &model.Todo{
+			ID:       relay.ToGlobalID("Todo", strconv.Itoa(ID)),
+			Text:     Text,
+			Complete: Complete,
+		})
 	}
 	Panic(rows.Err())
 	rows.Close()
 	/*
-		var todos []*model.Todo
-		if *status != model.StatusAny {
-			for _, todo := range todosAll {
-				if todo.Complete == true {
-					todos = append(todos, todo)
-				}
-			}
-		} else {
-			todos = todosAll
-		}
-
 		from, to, err := calcRange(todos, first, after)
 		log.Printf("## resolveTodoConnection ## from %d, to %d", from, to)
 		if err != nil {
@@ -108,6 +109,9 @@ func encodeCursor(id int) *string {
 }
 
 func decodeCursor(cursor *string) int {
+	if cursor == nil {
+		return 0
+	}
 	sDec, _ := base64.StdEncoding.DecodeString(*cursor)
 	id, _ := strconv.Atoi(string(sDec))
 	return id
