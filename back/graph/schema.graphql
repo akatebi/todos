@@ -7,7 +7,7 @@ type Query {
 
 type User implements Node {
   id: ID!
-  userId: String!
+  email: String!
   todos(status: Status = ANY, 
     after: String, first: Int,
     before: String, last: Int): TodoConnection

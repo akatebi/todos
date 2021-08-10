@@ -23,7 +23,7 @@ func (r *Resolver) QueryUser(id string) (*model.User, error) {
 	rows, err := r.db.Query("SELECT ID, UserID FROM Users WHERE id=? LIMIT 1", id)
 	user := &model.User{}
 	for rows.Next() {
-		rows.Scan(&user.ID, &user.UserID)
+		rows.Scan(&user.ID, &user.Email)
 	}
 	rows.Close()
 	Panic(err)
@@ -66,7 +66,7 @@ func (r *Resolver) Open() {
 		"USE Todos",
 		`CREATE TABLE Users (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			UserID VARCHAR(32),
+			Email VARCHAR(32),
 			TotalCount INT DEFAULT 0,
 			CompletedCount INT DEFAULT 0
 		) ENGINE=INNODB`,
@@ -89,10 +89,10 @@ func (r *Resolver) Open() {
 		}
 	}
 
-	UserID := "me@gmail.com"
-	stmt, e := db.Prepare("INSERT INTO Users(UserID) VALUES(?)")
+	Email := "me@gmail.com"
+	stmt, e := db.Prepare("INSERT INTO Users(Email) VALUES(?)")
 	Panic(e)
-	res, e := stmt.Exec(UserID)
+	res, e := stmt.Exec(Email)
 	Panic(e)
 	Users_id, e := res.LastInsertId()
 	Panic(e)

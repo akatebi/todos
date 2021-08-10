@@ -58,21 +58,21 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
-	rows, err := r.db.Query("Select * FROM Users WHERE UserID=? LIMIT 1", *id)
+	rows, err := r.db.Query("Select * FROM Users WHERE Email=? LIMIT 1", *id)
 	Panic(err)
 	log.Printf("User %v", rows)
-	var UserID string
+	var Email string
 	var ID, TotalCount, CompletedCount int
 	for rows.Next() {
-		err = rows.Scan(&ID, &UserID, &CompletedCount, &TotalCount)
+		err = rows.Scan(&ID, &Email, &CompletedCount, &TotalCount)
 		Panic(err)
-		fmt.Println(ID, UserID, CompletedCount, TotalCount)
+		fmt.Println(ID, Email, CompletedCount, TotalCount)
 	}
 	Panic(rows.Err())
 	rows.Close()
 	return &model.User{
 		ID:             relay.ToGlobalID("User", ToString(ID)),
-		UserID:         UserID,
+		Email:          Email,
 		TotalCount:     TotalCount,
 		CompletedCount: CompletedCount,
 	}, nil

@@ -119,10 +119,10 @@ type ComplexityRoot struct {
 
 	User struct {
 		CompletedCount func(childComplexity int) int
+		Email          func(childComplexity int) int
 		ID             func(childComplexity int) int
 		Todos          func(childComplexity int, status *model.Status, after *string, first *int, before *string, last *int) int
 		TotalCount     func(childComplexity int) int
-		UserID         func(childComplexity int) int
 	}
 }
 
@@ -456,6 +456,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.CompletedCount(childComplexity), true
 
+	case "User.email":
+		if e.complexity.User.Email == nil {
+			break
+		}
+
+		return e.complexity.User.Email(childComplexity), true
+
 	case "User.id":
 		if e.complexity.User.ID == nil {
 			break
@@ -481,13 +488,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.TotalCount(childComplexity), true
-
-	case "User.userId":
-		if e.complexity.User.UserID == nil {
-			break
-		}
-
-		return e.complexity.User.UserID(childComplexity), true
 
 	}
 	return 0, false
@@ -562,7 +562,7 @@ var sources = []*ast.Source{
 
 type User implements Node {
   id: ID!
-  userId: String!
+  email: String!
   todos(status: Status = ANY, 
     after: String, first: Int,
     before: String, last: Int): TodoConnection
@@ -2275,7 +2275,7 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_userId(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2293,7 +2293,7 @@ func (ec *executionContext) _User_userId(ctx context.Context, field graphql.Coll
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserID, nil
+		return obj.Email, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4183,8 +4183,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
-		case "userId":
-			out.Values[i] = ec._User_userId(ctx, field, obj)
+		case "email":
+			out.Values[i] = ec._User_email(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
