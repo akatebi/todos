@@ -11,20 +11,20 @@ import (
 )
 
 func (r *userResolver) resolveTodoConnection(
-	Users_ids string,
+	UserIds string,
 	status *model.Status,
 	after *string, first *int,
 	before *string, last *int) (*model.TodoConnection, error) {
 
-	log.Printf("Users_id %v status %v, after %v, first %v", Users_ids, status, after, *first)
+	log.Printf("UserId %v status %v, after %v, first %v", UserIds, status, after, *first)
 
-	Users_id, err := strconv.Atoi(Users_ids)
+	UserId, err := strconv.Atoi(UserIds)
 	Panic(err)
 	var rows *sql.Rows
 	if *status == model.StatusAny {
-		rows, err = r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? LIMIT ?", Users_id, DecodeCursor(after), *first)
+		rows, err = r.db.Query("Select * FROM Todos WHERE UserId = ? AND id > ? LIMIT ?", UserId, DecodeCursor(after), *first)
 	} else {
-		rows, err = r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? AND Complete = ? LIMIT ?", Users_id, DecodeCursor(after), *status == model.StatusCompleted, *first)
+		rows, err = r.db.Query("Select * FROM Todos WHERE UserId = ? AND id > ? AND Complete = ? LIMIT ?", UserId, DecodeCursor(after), *status == model.StatusCompleted, *first)
 	}
 	Panic(err)
 	log.Printf("Todos %v", rows)
@@ -33,10 +33,10 @@ func (r *userResolver) resolveTodoConnection(
 	count := 0
 	var StartCursor, EndCursor *string
 	for rows.Next() {
-		var ID, Users_id int
+		var ID, UserId int
 		var Text string
 		var Complete bool
-		err = rows.Scan(&ID, &Users_id, &Text, &Complete)
+		err = rows.Scan(&ID, &UserId, &Text, &Complete)
 		Panic(err)
 		if count == 0 {
 			StartCursor = EncodeCursor(ID)
@@ -44,7 +44,7 @@ func (r *userResolver) resolveTodoConnection(
 			EndCursor = EncodeCursor(ID)
 		}
 		count++
-		log.Printf("#### ID %v %v %v %v", ID, Users_id, Text, Complete)
+		log.Printf("#### ID %v %v %v %v", ID, UserId, Text, Complete)
 		Node := &model.Todo{
 			ID:       relay.ToGlobalID("Todo", strconv.Itoa(ID)),
 			Text:     Text,

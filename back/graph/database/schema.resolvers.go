@@ -16,10 +16,10 @@ import (
 
 func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error) {
 	log.Printf("AddTodo %v", input)
-	stmt, e := r.db.Prepare("INSERT INTO Todos(Users_id, Text, Complete) VALUES(?,?,?)")
+	stmt, e := r.db.Prepare("INSERT INTO Todos(UserId, Text, Complete) VALUES(?,?,?)")
 	Panic(e)
-	Users_id := relay.FromGlobalID(input.UserID).ID
-	res, e := stmt.Exec(Users_id, input.Text, false)
+	UserId := relay.FromGlobalID(input.UserID).ID
+	res, e := stmt.Exec(UserId, input.Text, false)
 	Panic(e)
 	id, e := res.LastInsertId()
 	Panic(e)
@@ -91,8 +91,8 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
 	log.Printf("Todos")
-	Users_id := relay.FromGlobalID(obj.ID).ID
-	return r.resolveTodoConnection(Users_id, status, after, first, before, last)
+	UserId := relay.FromGlobalID(obj.ID).ID
+	return r.resolveTodoConnection(UserId, status, after, first, before, last)
 }
 
 // Mutation returns generated.MutationResolver implementation.
