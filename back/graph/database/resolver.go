@@ -88,7 +88,7 @@ func (r *Resolver) Open() {
 	Panic(e)
 	log.Printf("Insert id %v", id)
 
-	res, e = stmt.Exec(Users_id, "Get Customer", false)
+	res, e = stmt.Exec(Users_id, "Get a customer", false)
 	Panic(e)
 	id, e = res.LastInsertId()
 	Panic(e)
