@@ -59,7 +59,24 @@ func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, erro
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
-	panic(fmt.Errorf("Node not implemented"))
+	log.Printf("Node")
+	node := relay.FromGlobalID(id)
+	if node.Type == "User" {
+		rows, err := r.db.Query("SELECT ID, UserID FROM Users WHERE id=? LIMIT 1", node.ID)
+		user := &model.User{}
+		for rows.Next() {
+			rows.Scan(&user.ID, &user.UserID)
+		}
+		rows.Close()
+		Panic(err)
+		r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE Users_id=?", &user.ID).Scan(&user.TotalCount)
+		r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE Users_id=? AND Complete=true", &user.ID).Scan(&user.CompletedCount)
+		return user, nil
+	} else if node.Type == "Todo" {
+		todo := &model.Todo{}
+		return todo, nil
+	}
+	return nil, fmt.Errorf("ID %v Not Found", id)
 }
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
