@@ -30,7 +30,7 @@ func (r *userResolver) resolveTodoConnection(
 	log.Printf("Todos %v", rows)
 
 	var edges []*model.TodoEdge
-	i := 0
+	totalCount := 0
 	var StartCursor, EndCursor *string
 	for rows.Next() {
 		var ID, Users_id int
@@ -38,12 +38,12 @@ func (r *userResolver) resolveTodoConnection(
 		var Complete bool
 		err = rows.Scan(&ID, &Users_id, &Text, &Complete)
 		Panic(err)
-		if i == 0 {
+		if totalCount == 0 {
 			StartCursor = encodeCursor(ID)
 		} else {
 			EndCursor = encodeCursor(ID)
 		}
-		i += 1
+		totalCount++
 		log.Printf("#### ID %v %v %v %v", ID, Users_id, Text, Complete)
 		Node := &model.Todo{
 			ID:       relay.ToGlobalID("Todo", strconv.Itoa(ID)),
@@ -59,16 +59,17 @@ func (r *userResolver) resolveTodoConnection(
 	}
 	Panic(rows.Err())
 	rows.Close()
-	todoConnection := model.TodoConnection{
-		PageInfo: &model.PageInfo{
-			StartCursor:     StartCursor,
-			EndCursor:       EndCursor,
-			HasNextPage:     true,
-			HasPreviousPage: true,
-		},
-		Edges: edges,
+	pageInfo := &model.PageInfo{
+		StartCursor:     StartCursor,
+		EndCursor:       EndCursor,
+		HasNextPage:     true,
+		HasPreviousPage: true,
 	}
-	return &todoConnection, nil
+	todoConnection := &model.TodoConnection{
+		PageInfo: pageInfo,
+		Edges:    edges,
+	}
+	return todoConnection, nil
 }
 
 func encodeCursor(id int) *string {
