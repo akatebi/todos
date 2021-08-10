@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"encoding/base64"
-	"fmt"
 	"log"
 	"strconv"
 
@@ -37,7 +36,6 @@ func (r *userResolver) resolveTodoConnection(
 		var ID, Users_id int
 		var Text string
 		var Complete bool
-		fmt.Printf("rows: %v\n", rows)
 		err = rows.Scan(&ID, &Users_id, &Text, &Complete)
 		Panic(err)
 		if i == 0 {
@@ -46,14 +44,16 @@ func (r *userResolver) resolveTodoConnection(
 			EndCursor = encodeCursor(ID)
 		}
 		i += 1
-		fmt.Println(ID, Users_id, Text, Complete)
+		log.Printf("#### ID %v %v %v %v", ID, Users_id, Text, Complete)
+		Node := &model.Todo{
+			ID:       relay.ToGlobalID("Todo", strconv.Itoa(ID)),
+			Text:     Text,
+			Complete: Complete,
+		}
+		log.Printf("#### Node %v", Node)
 		edge := &model.TodoEdge{
 			Cursor: *encodeCursor(ID),
-			Node: &model.Todo{
-				ID:       relay.ToGlobalID("Todo", strconv.Itoa(ID)),
-				Text:     Text,
-				Complete: Complete,
-			},
+			Node:   Node,
 		}
 		edges = append(edges, edge)
 	}
