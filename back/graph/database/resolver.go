@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/akatebi/todos/graph/model"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -16,6 +17,30 @@ import (
 
 type Resolver struct {
 	db *sql.DB
+}
+
+func (r *Resolver) QueryUser(id string) (*model.User, error) {
+	rows, err := r.db.Query("SELECT ID, UserID FROM Users WHERE id=? LIMIT 1", id)
+	user := &model.User{}
+	for rows.Next() {
+		rows.Scan(&user.ID, &user.UserID)
+	}
+	rows.Close()
+	Panic(err)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE Users_id=?", &user.ID).Scan(&user.TotalCount)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE Users_id=? AND Complete=true", &user.ID).Scan(&user.CompletedCount)
+	return user, nil
+}
+
+func (r *Resolver) QueryTodo(id string) (*model.Todo, error) {
+	rows, err := r.db.Query("SELECT ID, Text, Complete FROM Todos WHERE id=? LIMIT 1", id)
+	todo := &model.Todo{}
+	for rows.Next() {
+		rows.Scan(&todo.ID, &todo.Text, &todo.Complete)
+	}
+	rows.Close()
+	Panic(err)
+	return todo, nil
 }
 
 func (r *Resolver) Close() {

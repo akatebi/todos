@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/akatebi/todos/graph/generated"
 	"github.com/akatebi/todos/graph/model"
@@ -14,15 +15,26 @@ import (
 )
 
 func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error) {
-	panic(fmt.Errorf("not implemented"))
-	// stmt, e := r.db.Prepare("INSERT INTO Todos(Users_id, Text, Complete) VALUES(?,?,?)")
-	// 	Panic(e)
-	// 	Users_id := relay.FromGlobalID(input.UserID).ID
-	// 	res, e := stmt.Exec(Users_id, "Taste JavaScript", true)
-	// 	Panic(e)
-	// 	id, e := res.LastInsertId()
-	// 	Panic(e)
-	// 	log.Printf("Insert id %v", id)
+	log.Printf("AddTodo %v", input)
+	stmt, e := r.db.Prepare("INSERT INTO Todos(Users_id, Text, Complete) VALUES(?,?,?)")
+	Panic(e)
+	Users_id := relay.FromGlobalID(input.UserID).ID
+	res, e := stmt.Exec(Users_id, input.Text, false)
+	Panic(e)
+	id, e := res.LastInsertId()
+	Panic(e)
+	log.Printf("Insert id %v", id)
+	user, _ := r.QueryUser(input.UserID)
+	todo, _ := r.QueryTodo(strconv.Itoa(int(id)))
+	payload := &model.AddTodoPayload{
+		ClientMutationID: input.ClientMutationID,
+		User:             user,
+		TodoEdge: &model.TodoEdge{
+			Cursor: *EncodeCursor(int(id)),
+			Node:   todo,
+		},
+	}
+	return payload, nil
 }
 
 func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.ChangeTodoStatusInput) (*model.ChangeTodoStatusPayload, error) {
@@ -68,27 +80,11 @@ func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, erro
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
 	log.Printf("Node %v", id)
-	node := relay.FromGlobalID(id)
-	if node.Type == "User" {
-		rows, err := r.db.Query("SELECT ID, UserID FROM Users WHERE id=? LIMIT 1", node.ID)
-		user := &model.User{}
-		for rows.Next() {
-			rows.Scan(&user.ID, &user.UserID)
-		}
-		rows.Close()
-		Panic(err)
-		r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE Users_id=?", &user.ID).Scan(&user.TotalCount)
-		r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE Users_id=? AND Complete=true", &user.ID).Scan(&user.CompletedCount)
-		return user, nil
-	} else if node.Type == "Todo" {
-		rows, err := r.db.Query("SELECT ID, Text, Complete FROM Todos WHERE id=? LIMIT 1", node.ID)
-		todo := &model.Todo{}
-		for rows.Next() {
-			rows.Scan(&todo.ID, &todo.Text, &todo.Complete)
-		}
-		rows.Close()
-		Panic(err)
-		return todo, nil
+	obj := relay.FromGlobalID(id)
+	if obj.Type == "User" {
+		return r.QueryUser(obj.ID)
+	} else if obj.Type == "Todo" {
+		return r.QueryTodo(obj.ID)
 	}
 	return nil, fmt.Errorf("ID %v Not Found", id)
 }

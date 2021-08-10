@@ -22,9 +22,9 @@ func (r *userResolver) resolveTodoConnection(
 	Panic(err)
 	var rows *sql.Rows
 	if *status == model.StatusAny {
-		rows, err = r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? LIMIT ?", Users_id, decodeCursor(after), *first)
+		rows, err = r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? LIMIT ?", Users_id, DecodeCursor(after), *first)
 	} else {
-		rows, err = r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? AND Complete = ? LIMIT ?", Users_id, decodeCursor(after), *status == model.StatusCompleted, *first)
+		rows, err = r.db.Query("Select * FROM Todos WHERE Users_id = ? AND id > ? AND Complete = ? LIMIT ?", Users_id, DecodeCursor(after), *status == model.StatusCompleted, *first)
 	}
 	Panic(err)
 	log.Printf("Todos %v", rows)
@@ -39,9 +39,9 @@ func (r *userResolver) resolveTodoConnection(
 		err = rows.Scan(&ID, &Users_id, &Text, &Complete)
 		Panic(err)
 		if count == 0 {
-			StartCursor = encodeCursor(ID)
+			StartCursor = EncodeCursor(ID)
 		} else {
-			EndCursor = encodeCursor(ID)
+			EndCursor = EncodeCursor(ID)
 		}
 		count++
 		log.Printf("#### ID %v %v %v %v", ID, Users_id, Text, Complete)
@@ -52,7 +52,7 @@ func (r *userResolver) resolveTodoConnection(
 		}
 		log.Printf("#### Node %v", Node)
 		edge := &model.TodoEdge{
-			Cursor: *encodeCursor(ID),
+			Cursor: *EncodeCursor(ID),
 			Node:   Node,
 		}
 		edges = append(edges, edge)
@@ -72,12 +72,12 @@ func (r *userResolver) resolveTodoConnection(
 	return todoConnection, nil
 }
 
-func encodeCursor(id int) *string {
+func EncodeCursor(id int) *string {
 	cursor := string(base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(id))))
 	return &cursor
 }
 
-func decodeCursor(cursor *string) int {
+func DecodeCursor(cursor *string) int {
 	if cursor == nil {
 		return 0
 	}
