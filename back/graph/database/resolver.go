@@ -3,12 +3,13 @@ package database
 //  k exec -it mysql-69567fc988-r54x2 -c mysql -- bash
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/akatebi/todos/graph/model"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/graphql-go/relay"
 )
 
 // This file will not be regenerated automatically.
@@ -20,10 +21,12 @@ type Resolver struct {
 }
 
 func (r *Resolver) QueryUser(id string) (*model.User, error) {
-	rows, err := r.db.Query("SELECT ID, UserID FROM Users WHERE id=? LIMIT 1", id)
+	rows, err := r.db.Query("SELECT ID, Email FROM Users WHERE id=? LIMIT 1", id)
 	user := &model.User{}
 	for rows.Next() {
-		rows.Scan(&user.ID, &user.Email)
+		var id int
+		rows.Scan(&id, &user.Email)
+		user.ID = relay.ToGlobalID("User", strconv.Itoa(id))
 	}
 	rows.Close()
 	Panic(err)
@@ -36,7 +39,9 @@ func (r *Resolver) QueryTodo(id string) (*model.Todo, error) {
 	rows, err := r.db.Query("SELECT ID, Text, Complete FROM Todos WHERE id=? LIMIT 1", id)
 	todo := &model.Todo{}
 	for rows.Next() {
-		rows.Scan(&todo.ID, &todo.Text, &todo.Complete)
+		var id int
+		rows.Scan(&id, &todo.Text, &todo.Complete)
+		todo.ID = relay.ToGlobalID("Todo", strconv.Itoa(id))
 	}
 	rows.Close()
 	Panic(err)
@@ -126,12 +131,4 @@ func Panic(err error) {
 	if err != nil {
 		panic(err.Error())
 	}
-}
-
-func ToString(id int) string {
-	json, err := json.Marshal(id)
-	if err != nil {
-		panic(err)
-	}
-	return string(json)
 }

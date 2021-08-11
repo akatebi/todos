@@ -58,24 +58,19 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
-	rows, err := r.db.Query("Select * FROM Users WHERE Email=? LIMIT 1", *id)
-	Panic(err)
-	log.Printf("User %v", rows)
-	var Email string
-	var ID, TotalCount, CompletedCount int
+	log.Printf("### User %v", *id)
+	rows, err := r.db.Query("SELECT ID, Email FROM Users WHERE email=? LIMIT 1", *id)
+	user := &model.User{}
+	var ID int
 	for rows.Next() {
-		err = rows.Scan(&ID, &Email, &CompletedCount, &TotalCount)
-		Panic(err)
-		fmt.Println(ID, Email, CompletedCount, TotalCount)
+		rows.Scan(&ID, &user.Email)
 	}
-	Panic(rows.Err())
 	rows.Close()
-	return &model.User{
-		ID:             relay.ToGlobalID("User", ToString(ID)),
-		Email:          Email,
-		TotalCount:     TotalCount,
-		CompletedCount: CompletedCount,
-	}, nil
+	Panic(err)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=?", ID).Scan(&user.TotalCount)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=? AND Complete=true", ID).Scan(&user.CompletedCount)
+	user.ID = relay.ToGlobalID("User", strconv.Itoa(ID))
+	return user, nil
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
