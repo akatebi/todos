@@ -16,15 +16,16 @@ func (r *userResolver) resolveTodoConnection(
 	after *string, first *int,
 	before *string, last *int) (*model.TodoConnection, error) {
 
-	log.Printf("id_User %v status %v, after %v, first %v", id_Users, status, after, *first)
+	afterInt := DecodeCursor(after)
+	log.Printf("id_User %v status %v, after %v, first %v", id_Users, status, afterInt, *first)
 
 	id_User, err := strconv.Atoi(id_Users)
 	Panic(err)
 	var rows *sql.Rows
 	if *status == model.StatusAny {
-		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? LIMIT ?", id_User, DecodeCursor(after), *first)
+		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? LIMIT ?", id_User, afterInt, *first)
 	} else {
-		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? AND Complete = ? LIMIT ?", id_User, DecodeCursor(after), *status == model.StatusCompleted, *first)
+		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? AND Complete = ? LIMIT ?", id_User, afterInt, *status == model.StatusCompleted, *first)
 	}
 	Panic(err)
 	log.Printf("Todos %v", rows)
