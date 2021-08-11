@@ -24,8 +24,8 @@ func (r *Resolver) QueryUser(id string) *model.User {
 	var ID int
 	user := &model.User{}
 	r.db.QueryRow("SELECT ID, Email FROM Users WHERE id=? LIMIT 1", id).Scan(&ID, &user.Email)
-	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=?", id).Scan(&user.TotalCount)
-	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=? AND Complete=true", id).Scan(&user.CompletedCount)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=?", id).Scan(&user.TotalCount)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=? AND Complete=true", id).Scan(&user.CompletedCount)
 	user.ID = relay.ToGlobalID("User", strconv.Itoa(ID))
 	return user
 }
@@ -67,10 +67,10 @@ func (r *Resolver) Open() {
 		) ENGINE=INNODB`,
 		`CREATE TABLE Todos (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			UserId INT,
+			id_User INT,
 			Text VARCHAR(32),
 			Complete BOOLEAN DEFAULT false,
-			FOREIGN KEY (UserId)
+			FOREIGN KEY (id_User)
 				REFERENCES Users(id)
 				ON DELETE CASCADE
 		) ENGINE=INNODB`,
@@ -89,26 +89,26 @@ func (r *Resolver) Open() {
 	Panic(e)
 	res, e := stmt.Exec(Email)
 	Panic(e)
-	UserId, e := res.LastInsertId()
+	id_User, e := res.LastInsertId()
 	Panic(e)
-	log.Printf("Insert UserId %v", UserId)
+	log.Printf("Insert id_User %v", id_User)
 
-	stmt, e = db.Prepare("INSERT INTO Todos(UserId, Text, Complete) VALUES(?,?,?)")
+	stmt, e = db.Prepare("INSERT INTO Todos(id_User, Text, Complete) VALUES(?,?,?)")
 	Panic(e)
 
-	res, e = stmt.Exec(UserId, "Taste JavaScript", true)
+	res, e = stmt.Exec(id_User, "Taste JavaScript", true)
 	Panic(e)
 	id, e := res.LastInsertId()
 	Panic(e)
 	log.Printf("Insert id %v", id)
 
-	res, e = stmt.Exec(UserId, "Buy a unicorn", false)
+	res, e = stmt.Exec(id_User, "Buy a unicorn", false)
 	Panic(e)
 	id, e = res.LastInsertId()
 	Panic(e)
 	log.Printf("Insert id %v", id)
 
-	res, e = stmt.Exec(UserId, "Get a customer", false)
+	res, e = stmt.Exec(id_User, "Get a customer", false)
 	Panic(e)
 	id, e = res.LastInsertId()
 	Panic(e)
