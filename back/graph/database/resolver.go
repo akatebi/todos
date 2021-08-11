@@ -1,6 +1,9 @@
 package database
 
+//go:generate go run github.com/99designs/gqlgen
+
 //  k exec -it mysql-69567fc988-r54x2 -c mysql -- bash
+
 import (
 	"database/sql"
 	"fmt"
