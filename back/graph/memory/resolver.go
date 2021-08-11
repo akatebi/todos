@@ -19,15 +19,15 @@ type Resolver struct {
 }
 
 // Initialize ...
-func (r *Resolver) initalize(userID string) *Resolver {
-	ID := relay.ToGlobalID("User", userID)
+func (r *Resolver) initalize(email string) *Resolver {
+	ID := relay.ToGlobalID("User", email)
 	if r.users[ID] == nil {
 		r.users = make(map[string]*model.User)
 		r.todos = make(map[string][]*model.Todo)
 	}
 	r.users[ID] = &model.User{
 		ID:             ID,
-		UserID:         userID,
+		Email:          email,
 		TotalCount:     0,
 		CompletedCount: 0,
 	}
