@@ -15,7 +15,7 @@ import (
 )
 
 func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error) {
-	log.Printf("AddTodo %v", input)
+	log.Printf("##### AddTodo %v #####", input)
 	stmt, e := r.db.Prepare("INSERT INTO Todos(id_User, Text, Complete) VALUES(?,?,?)")
 	Panic(e)
 	UserID := relay.FromGlobalID(input.UserID).ID
@@ -38,7 +38,16 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 }
 
 func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.ChangeTodoStatusInput) (*model.ChangeTodoStatusPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	log.Printf("##### ChangeTodoStatus #####")
+	obj := relay.FromGlobalID(input.ID)
+	stmt, err := r.db.Prepare("update Todos set Complete=? where id=?")
+	Panic(err)
+	res, err := stmt.Exec(input.Complete, obj.ID)
+	Panic(err)
+	a, err := res.RowsAffected()
+	Panic(err)
+	log.Printf("Rows affected %v", a)
+	return &model.ChangeTodoStatusPayload{}, nil
 }
 
 func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAllTodosInput) (*model.MarkAllTodosPayload, error) {
@@ -58,7 +67,7 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
-	log.Printf("############ User %v ###########", *id)
+	log.Printf("##### User %v #####", *id)
 	var ID int
 	user := &model.User{}
 	r.db.QueryRow("SELECT ID, Email FROM Users WHERE email=? LIMIT 1", *id).Scan(&ID, &user.Email)
@@ -69,7 +78,7 @@ func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, erro
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
-	log.Printf("Node %v", id)
+	log.Printf("##### Node %v #####", id)
 	obj := relay.FromGlobalID(id)
 	if obj.Type == "User" {
 		return r.QueryUser(obj.ID), nil
@@ -80,7 +89,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 }
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
-	log.Printf("Todos")
+	log.Printf("##### Todos #####")
 	id_User := relay.FromGlobalID(obj.ID).ID
 	return r.resolveTodoConnection(id_User, status, after, first, before, last)
 }
