@@ -18,14 +18,14 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 	log.Printf("AddTodo %v", input)
 	stmt, e := r.db.Prepare("INSERT INTO Todos(UserId, Text, Complete) VALUES(?,?,?)")
 	Panic(e)
-	UserId := relay.FromGlobalID(input.UserID).ID
-	res, e := stmt.Exec(UserId, input.Text, false)
+	UserID := relay.FromGlobalID(input.UserID).ID
+	res, e := stmt.Exec(UserID, input.Text, false)
 	Panic(e)
 	id, e := res.LastInsertId()
 	Panic(e)
 	log.Printf("Insert id %v", id)
-	user, _ := r.QueryUser(input.UserID)
-	todo, _ := r.QueryTodo(strconv.Itoa(int(id)))
+	todo := r.QueryTodo(strconv.FormatInt(id, 10))
+	user := r.QueryUser(UserID)
 	payload := &model.AddTodoPayload{
 		ClientMutationID: input.ClientMutationID,
 		User:             user,
@@ -77,9 +77,9 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 	log.Printf("Node %v", id)
 	obj := relay.FromGlobalID(id)
 	if obj.Type == "User" {
-		return r.QueryUser(obj.ID)
+		return r.QueryUser(obj.ID), nil
 	} else if obj.Type == "Todo" {
-		return r.QueryTodo(obj.ID)
+		return r.QueryTodo(obj.ID), nil
 	}
 	return nil, fmt.Errorf("ID %v Not Found", id)
 }

@@ -20,22 +20,22 @@ type Resolver struct {
 	db *sql.DB
 }
 
-func (r *Resolver) QueryUser(id string) (*model.User, error) {
+func (r *Resolver) QueryUser(id string) *model.User {
 	var ID int
 	user := &model.User{}
 	r.db.QueryRow("SELECT ID, Email FROM Users WHERE id=? LIMIT 1", id).Scan(&ID, &user.Email)
-	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=?", &user.ID).Scan(&user.TotalCount)
-	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=? AND Complete=true", &user.ID).Scan(&user.CompletedCount)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=?", id).Scan(&user.TotalCount)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=? AND Complete=true", id).Scan(&user.CompletedCount)
 	user.ID = relay.ToGlobalID("User", strconv.Itoa(ID))
-	return user, nil
+	return user
 }
 
-func (r *Resolver) QueryTodo(id string) (*model.Todo, error) {
+func (r *Resolver) QueryTodo(id string) *model.Todo {
 	var ID int
 	todo := &model.Todo{}
 	r.db.QueryRow("SELECT ID, Text, Complete FROM Todos WHERE id=? LIMIT 1", id).Scan(&ID, &todo.Text, &todo.Complete)
 	todo.ID = relay.ToGlobalID("Todo", strconv.Itoa(ID))
-	return todo, nil
+	return todo
 }
 
 func (r *Resolver) Close() {
