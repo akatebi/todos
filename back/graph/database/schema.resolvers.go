@@ -59,14 +59,9 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
 	log.Printf("### User %v", *id)
-	rows, err := r.db.Query("SELECT ID, Email FROM Users WHERE email=? LIMIT 1", *id)
-	user := &model.User{}
 	var ID int
-	for rows.Next() {
-		rows.Scan(&ID, &user.Email)
-	}
-	rows.Close()
-	Panic(err)
+	user := &model.User{}
+	r.db.QueryRow("SELECT ID, Email FROM Users WHERE email=? LIMIT 1", *id).Scan(&ID, &user.Email)
 	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=?", ID).Scan(&user.TotalCount)
 	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=? AND Complete=true", ID).Scan(&user.CompletedCount)
 	user.ID = relay.ToGlobalID("User", strconv.Itoa(ID))
