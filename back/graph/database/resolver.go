@@ -21,30 +21,20 @@ type Resolver struct {
 }
 
 func (r *Resolver) QueryUser(id string) (*model.User, error) {
-	rows, err := r.db.Query("SELECT ID, Email FROM Users WHERE id=? LIMIT 1", id)
+	var ID int
 	user := &model.User{}
-	for rows.Next() {
-		var id int
-		rows.Scan(&id, &user.Email)
-		user.ID = relay.ToGlobalID("User", strconv.Itoa(id))
-	}
-	rows.Close()
-	Panic(err)
+	r.db.QueryRow("SELECT ID, Email FROM Users WHERE id=? LIMIT 1", id).Scan(&ID, &user.Email)
 	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=?", &user.ID).Scan(&user.TotalCount)
 	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE UserId=? AND Complete=true", &user.ID).Scan(&user.CompletedCount)
+	user.ID = relay.ToGlobalID("User", strconv.Itoa(ID))
 	return user, nil
 }
 
 func (r *Resolver) QueryTodo(id string) (*model.Todo, error) {
-	rows, err := r.db.Query("SELECT ID, Text, Complete FROM Todos WHERE id=? LIMIT 1", id)
+	var ID int
 	todo := &model.Todo{}
-	for rows.Next() {
-		var id int
-		rows.Scan(&id, &todo.Text, &todo.Complete)
-		todo.ID = relay.ToGlobalID("Todo", strconv.Itoa(id))
-	}
-	rows.Close()
-	Panic(err)
+	r.db.QueryRow("SELECT ID, Text, Complete FROM Todos WHERE id=? LIMIT 1", id).Scan(&ID, &todo.Text, &todo.Complete)
+	todo.ID = relay.ToGlobalID("Todo", strconv.Itoa(ID))
 	return todo, nil
 }
 
