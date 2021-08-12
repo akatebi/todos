@@ -13,19 +13,18 @@ import (
 func (r *userResolver) resolveTodoConnection(
 	id_Users string,
 	status *model.Status,
-	after *string, first *int,
-	before *string, last *int) (*model.TodoConnection, error) {
+	after int, first int,
+	before int, last int) (*model.TodoConnection, error) {
 
-	afterInt := DecodeCursor(after)
-	log.Printf("id_User %v status %v, after %v, first %v", id_Users, status, afterInt, *first)
+	log.Printf("id_User %v status %v, after %v, first %v", id_Users, status, after, first)
 
 	id_User, err := strconv.Atoi(id_Users)
 	Panic(err)
 	var rows *sql.Rows
 	if *status == model.StatusAny {
-		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? LIMIT ?", id_User, afterInt, *first)
+		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? LIMIT ?", id_User, after, first)
 	} else {
-		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? AND Complete = ? LIMIT ?", id_User, afterInt, *status == model.StatusCompleted, *first)
+		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? AND Complete = ? LIMIT ?", id_User, after, *status == model.StatusCompleted, first)
 	}
 	Panic(err)
 	log.Printf("Todos %v", rows)

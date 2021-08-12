@@ -9,8 +9,9 @@ type User implements Node {
   id: ID!
   email: String!
   todos(status: Status = ANY, 
-    after: String, first: Int,
-    before: String, last: Int): TodoConnection
+        after: String, first: Int,
+        before: String, last: Int
+      ) : TodoConnection
   totalCount: Int!
   completedCount: Int!
 }
@@ -26,9 +27,9 @@ type TodoConnection {
 
 type PageInfo {
   hasNextPage: Boolean!
+  endCursor: String
   hasPreviousPage: Boolean!
   startCursor: String
-  endCursor: String
 }
 
 type TodoEdge {
