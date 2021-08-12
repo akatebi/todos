@@ -47,7 +47,15 @@ func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.Cha
 	a, err := res.RowsAffected()
 	Panic(err)
 	log.Printf("Rows affected %v", a)
-	return &model.ChangeTodoStatusPayload{}, nil
+	todo := r.QueryTodo(obj.ID)
+	UserID := relay.FromGlobalID(input.UserID).ID
+	user := r.QueryUser(UserID)
+	payload := &model.ChangeTodoStatusPayload{
+		ClientMutationID: input.ClientMutationID,
+		User:             user,
+		Todo:             todo,
+	}
+	return payload, nil
 }
 
 func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAllTodosInput) (*model.MarkAllTodosPayload, error) {
