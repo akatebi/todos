@@ -3,6 +3,7 @@
 // @ts-nocheck
 
 import { ReaderFragment } from "relay-runtime";
+
 import { FragmentRefs } from "relay-runtime";
 export type TodoList_user = {
     readonly todos: {
@@ -15,7 +16,7 @@ export type TodoList_user = {
         } | null> | null;
     } | null;
     readonly id: string;
-    readonly userId: string;
+    readonly email: string;
     readonly totalCount: number;
     readonly completedCount: number;
     readonly " $fragmentRefs": FragmentRefs<"Todo_user">;
@@ -144,7 +145,7 @@ return {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "userId",
+      "name": "email",
       "storageKey": null
     },
     {
@@ -171,5 +172,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = '4c169798c328a2b4d9b4ae5227d016bb';
+(node as any).hash = '03f32ea23092f861bbb8c3dfc4be73bb';
 export default node;

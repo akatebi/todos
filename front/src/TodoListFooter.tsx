@@ -13,7 +13,7 @@ export default function TodoListFooter(props: Props) {
     graphql`
       fragment TodoListFooter_user on User {
         id
-        userId
+        email
         completedCount
         todos(
           first: 2147483647 # max GraphQLInt

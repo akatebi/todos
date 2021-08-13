@@ -3,10 +3,11 @@
 // @ts-nocheck
 
 import { ReaderFragment } from "relay-runtime";
+
 import { FragmentRefs } from "relay-runtime";
 export type Todo_user = {
     readonly id: string;
-    readonly userId: string;
+    readonly email: string;
     readonly totalCount: number;
     readonly completedCount: number;
     readonly " $refType": "Todo_user";
@@ -36,7 +37,7 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "userId",
+      "name": "email",
       "storageKey": null
     },
     {
@@ -57,5 +58,5 @@ const node: ReaderFragment = {
   "type": "User",
   "abstractKey": null
 };
-(node as any).hash = '7d4a99e73771e30c8a0ba7cb397430e3';
+(node as any).hash = '35184cb71937e375f968db4d0b6a3ce3';
 export default node;

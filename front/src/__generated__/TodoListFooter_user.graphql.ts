@@ -3,10 +3,11 @@
 // @ts-nocheck
 
 import { ReaderFragment } from "relay-runtime";
+
 import { FragmentRefs } from "relay-runtime";
 export type TodoListFooter_user = {
     readonly id: string;
-    readonly userId: string;
+    readonly email: string;
     readonly completedCount: number;
     readonly todos: {
         readonly edges: ReadonlyArray<{
@@ -57,7 +58,7 @@ return {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "userId",
+      "name": "email",
       "storageKey": null
     },
     {
@@ -159,5 +160,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = '3225adf0f3b5d0a46ee4c63c8dbd9b08';
+(node as any).hash = '8018b803e1241126a9183897352ee55d';
 export default node;

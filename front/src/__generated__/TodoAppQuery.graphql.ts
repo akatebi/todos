@@ -3,6 +3,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
+
 import { FragmentRefs } from "relay-runtime";
 export type TodoAppQueryVariables = {
     userId: string;
@@ -35,7 +36,7 @@ query TodoAppQuery(
 
 fragment TodoListFooter_user on User {
   id
-  userId
+  email
   completedCount
   todos(first: 2147483647) {
     edges {
@@ -71,7 +72,7 @@ fragment TodoList_user on User {
     }
   }
   id
-  userId
+  email
   totalCount
   completedCount
   ...Todo_user
@@ -85,7 +86,7 @@ fragment Todo_todo on Todo {
 
 fragment Todo_user on User {
   id
-  userId
+  email
   totalCount
   completedCount
 }
@@ -181,7 +182,7 @@ return {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "userId",
+            "name": "email",
             "storageKey": null
           },
           {
@@ -293,12 +294,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "cf60cccb542089f14140a4b11e1ce026",
+    "cacheID": "ace1e60cd5e00ea681fd3442a03f1ec6",
     "id": null,
     "metadata": {},
     "name": "TodoAppQuery",
     "operationKind": "query",
-    "text": "query TodoAppQuery(\n  $userId: String!\n) {\n  user(id: $userId) {\n    id\n    totalCount\n    ...TodoListFooter_user\n    ...TodoList_user\n  }\n}\n\nfragment TodoListFooter_user on User {\n  id\n  userId\n  completedCount\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  totalCount\n}\n\nfragment TodoList_user on User {\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n  userId\n  totalCount\n  completedCount\n  ...Todo_user\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_user on User {\n  id\n  userId\n  totalCount\n  completedCount\n}\n"
+    "text": "query TodoAppQuery(\n  $userId: String!\n) {\n  user(id: $userId) {\n    id\n    totalCount\n    ...TodoListFooter_user\n    ...TodoList_user\n  }\n}\n\nfragment TodoListFooter_user on User {\n  id\n  email\n  completedCount\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  totalCount\n}\n\nfragment TodoList_user on User {\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n  email\n  totalCount\n  completedCount\n  ...Todo_user\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_user on User {\n  id\n  email\n  totalCount\n  completedCount\n}\n"
   }
 };
 })();

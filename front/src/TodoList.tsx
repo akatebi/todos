@@ -25,7 +25,7 @@ export default function TodoList(props: Props) {
           }
         }
         id
-        userId
+        email
         totalCount
         completedCount
         ...Todo_user

@@ -3,6 +3,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
+
 export type RemoveCompletedTodosInput = {
     userId: string;
     clientMutationId?: string | null;

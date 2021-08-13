@@ -19,7 +19,7 @@ export default function Todo(props: Props) {
     graphql`
       fragment Todo_user on User {
         id
-        userId
+        email
         totalCount
         completedCount
       }
