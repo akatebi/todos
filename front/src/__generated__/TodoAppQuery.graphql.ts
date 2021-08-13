@@ -6,7 +6,7 @@ import { ConcreteRequest } from "relay-runtime";
 
 import { FragmentRefs } from "relay-runtime";
 export type TodoAppQueryVariables = {
-    userId: string;
+    email: string;
 };
 export type TodoAppQueryResponse = {
     readonly user: {
@@ -24,9 +24,9 @@ export type TodoAppQuery = {
 
 /*
 query TodoAppQuery(
-  $userId: String!
+  $email: String!
 ) {
-  user(id: $userId) {
+  user(email: $email) {
     id
     totalCount
     ...TodoListFooter_user
@@ -97,14 +97,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "userId"
+    "name": "email"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "id",
-    "variableName": "userId"
+    "name": "email",
+    "variableName": "email"
   }
 ],
 v2 = {
@@ -294,14 +294,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ace1e60cd5e00ea681fd3442a03f1ec6",
+    "cacheID": "1cae7078c89d1a96b3909b88fd2efb75",
     "id": null,
     "metadata": {},
     "name": "TodoAppQuery",
     "operationKind": "query",
-    "text": "query TodoAppQuery(\n  $userId: String!\n) {\n  user(id: $userId) {\n    id\n    totalCount\n    ...TodoListFooter_user\n    ...TodoList_user\n  }\n}\n\nfragment TodoListFooter_user on User {\n  id\n  email\n  completedCount\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  totalCount\n}\n\nfragment TodoList_user on User {\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n  email\n  totalCount\n  completedCount\n  ...Todo_user\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_user on User {\n  id\n  email\n  totalCount\n  completedCount\n}\n"
+    "text": "query TodoAppQuery(\n  $email: String!\n) {\n  user(email: $email) {\n    id\n    totalCount\n    ...TodoListFooter_user\n    ...TodoList_user\n  }\n}\n\nfragment TodoListFooter_user on User {\n  id\n  email\n  completedCount\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  totalCount\n}\n\nfragment TodoList_user on User {\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n  email\n  totalCount\n  completedCount\n  ...Todo_user\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_user on User {\n  id\n  email\n  totalCount\n  completedCount\n}\n"
   }
 };
 })();
-(node as any).hash = '4485a7b9397e8720f71fb6154d2fcefc';
+(node as any).hash = 'eedd9219473719e51b984aa82099b58d';
 export default node;

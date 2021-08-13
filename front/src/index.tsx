@@ -13,7 +13,7 @@ const initialQueryRef = loadQuery<TodoAppQuery.TodoAppQuery>(
   TodoAppEnvironment,
   TodoAppQuery.default,
   {
-    userId: "me@gmail.com"
+    email: "me@gmail.com"
   }
 );
 ReactDOM.render(

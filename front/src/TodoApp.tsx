@@ -16,8 +16,8 @@ interface Props {
 function TodoApp(props: Props) {
   const data = usePreloadedQuery(
     graphql`
-      query TodoAppQuery($userId: String!) {
-        user(id: $userId) {
+      query TodoAppQuery($email: String!) {
+        user(email: $email) {
           id
           totalCount
           ...TodoListFooter_user

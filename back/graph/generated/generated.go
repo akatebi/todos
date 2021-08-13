@@ -81,7 +81,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Node func(childComplexity int, id string) int
-		User func(childComplexity int, id *string) int
+		User func(childComplexity int, email *string) int
 	}
 
 	RemoveCompletedTodosPayload struct {
@@ -135,7 +135,7 @@ type MutationResolver interface {
 	RenameTodo(ctx context.Context, input model.RenameTodoInput) (*model.RenameTodoPayload, error)
 }
 type QueryResolver interface {
-	User(ctx context.Context, id *string) (*model.User, error)
+	User(ctx context.Context, email *string) (*model.User, error)
 	Node(ctx context.Context, id string) (model.Node, error)
 }
 type UserResolver interface {
@@ -342,7 +342,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.User(childComplexity, args["id"].(*string)), true
+		return e.complexity.Query.User(childComplexity, args["email"].(*string)), true
 
 	case "RemoveCompletedTodosPayload.clientMutationId":
 		if e.complexity.RemoveCompletedTodosPayload.ClientMutationID == nil {
@@ -554,7 +554,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "graph/schema.graphql", Input: `type Query {
-  user(id: String): User
+  user(email: String): User
   node(
     id: ID!
   ): Node
@@ -814,14 +814,14 @@ func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs m
 	var err error
 	args := map[string]interface{}{}
 	var arg0 *string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
 		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["email"] = arg0
 	return args, nil
 }
 
@@ -1610,7 +1610,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().User(rctx, args["id"].(*string))
+		return ec.resolvers.Query().User(rctx, args["email"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

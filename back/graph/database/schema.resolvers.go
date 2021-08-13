@@ -74,11 +74,11 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
-	log.Printf("##### User %v #####", *id)
+func (r *queryResolver) User(ctx context.Context, email *string) (*model.User, error) {
+	log.Printf("##### User %v #####", *email)
 	var ID int
 	user := &model.User{}
-	r.db.QueryRow("SELECT ID, Email FROM Users WHERE email=? LIMIT 1", *id).Scan(&ID, &user.Email)
+	r.db.QueryRow("SELECT ID, Email FROM Users WHERE email=? LIMIT 1", *email).Scan(&ID, &user.Email)
 	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=?", ID).Scan(&user.TotalCount)
 	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=? AND Complete=true", ID).Scan(&user.CompletedCount)
 	user.ID = relay.ToGlobalID("User", strconv.Itoa(ID))
