@@ -41,6 +41,27 @@ func (r *Resolver) QueryTodo(id string) *model.Todo {
 	return todo
 }
 
+func (r *Resolver) QueryMarkAllTodos(id string, Complete bool) []*model.Todo {
+	log.Printf("QueryMarkAllTodos Complete %v", Complete)
+	Stmt, err := r.db.Prepare("UPDATE Todos SET Complete=? WHERE id_User=?")
+	Panic(err)
+	_, err = Stmt.Exec(Complete, id)
+	Panic(err)
+	rows, err := r.db.Query("SELECT ID, TEXT, Complete FROM Todos WHERE id_User=?", id)
+	Panic(err)
+	todos := []*model.Todo{}
+	for rows.Next() {
+		todo := &model.Todo{}
+		var ID int
+		err = rows.Scan(&ID, &todo.Text, &todo.Complete)
+		Panic(err)
+		todo.ID = relay.ToGlobalID("Todo", strconv.Itoa(ID))
+		todos = append(todos, todo)
+	}
+	rows.Close()
+	return todos
+}
+
 func (r *Resolver) Close() {
 	r.db.Close()
 }

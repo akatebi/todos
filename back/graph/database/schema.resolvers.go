@@ -59,7 +59,16 @@ func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.Cha
 }
 
 func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAllTodosInput) (*model.MarkAllTodosPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	log.Printf("##### MarkAllTodos #####")
+	UserID := relay.FromGlobalID(input.UserID).ID
+	user := r.QueryUser(UserID)
+	changedTodos := r.QueryMarkAllTodos(UserID, input.Complete)
+	payload := &model.MarkAllTodosPayload{
+		ClientMutationID: input.ClientMutationID,
+		User:             user,
+		ChangedTodos:     changedTodos,
+	}
+	return payload, nil
 }
 
 func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model.RemoveCompletedTodosInput) (*model.RemoveCompletedTodosPayload, error) {
