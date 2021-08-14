@@ -99,11 +99,40 @@ func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model
 }
 
 func (r *mutationResolver) RemoveTodo(ctx context.Context, input model.RemoveTodoInput) (*model.RemoveTodoPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	log.Printf("##### RemoveTodo #####")
+	ID := relay.FromGlobalID(input.ID).ID
+	Stmt, err := r.db.Prepare("DELETE FROM Todos WHERE id=?")
+	res, err := Stmt.Exec(ID)
+	Panic(err)
+	rowsAffected, err := res.RowsAffected()
+	Panic(err)
+	log.Printf("Rows Affected %v", rowsAffected)
+	user := r.QueryUser(input.UserID)
+	payload := &model.RemoveTodoPayload{
+		ClientMutationID: input.ClientMutationID,
+		DeletedTodoID:    input.ID,
+		User:             user,
+	}
+	return payload, nil
 }
 
 func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTodoInput) (*model.RenameTodoPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	ID := relay.FromGlobalID(input.ID).ID
+	log.Printf("##### RenameTodo #####")
+	Stmt, err := r.db.Prepare("UPDATE Todos SET Text=? WHERE id=?")
+	Panic(err)
+	res, err := Stmt.Exec(input.Text, ID)
+	Panic(err)
+	rowsAffected, err := res.RowsAffected()
+	Panic(err)
+	log.Printf("Rows Affected %v", rowsAffected)
+	todo := r.QueryTodo(ID)
+	log.Printf("Todo %v", todo)
+	payload := &model.RenameTodoPayload{
+		ClientMutationID: input.ClientMutationID,
+		Todo:             todo,
+	}
+	return payload, nil
 }
 
 func (r *queryResolver) User(ctx context.Context, email *string) (*model.User, error) {
