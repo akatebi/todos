@@ -72,7 +72,30 @@ func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAll
 }
 
 func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model.RemoveCompletedTodosInput) (*model.RemoveCompletedTodosPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	log.Printf("##### RemoveCompletedTodos #####")
+	ID := relay.FromGlobalID(input.UserID).ID
+	var deletedTodoIds []string
+	rows, err := r.db.Query("SELECT ID FROM Todos WHERE id_User=? AND Complete=true", ID)
+	Panic(err)
+	for rows.Next() {
+		var ID int
+		rows.Scan(&ID)
+		deletedTodoIds = append(deletedTodoIds, relay.ToGlobalID("Todo", strconv.Itoa(ID)))
+	}
+	defer rows.Close()
+	Stmt, err := r.db.Prepare("DELETE FROM Todos WHERE id_User=? AND Complete=true")
+	res, err := Stmt.Exec(ID)
+	Panic(err)
+	rowsAffected, err := res.RowsAffected()
+	Panic(err)
+	log.Printf("Rows Affected %v", rowsAffected)
+	user := r.QueryUser(input.UserID)
+	payload := &model.RemoveCompletedTodosPayload{
+		ClientMutationID: input.ClientMutationID,
+		DeletedTodoIds:   deletedTodoIds,
+		User:             user,
+	}
+	return payload, nil
 }
 
 func (r *mutationResolver) RemoveTodo(ctx context.Context, input model.RemoveTodoInput) (*model.RemoveTodoPayload, error) {

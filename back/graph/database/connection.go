@@ -26,8 +26,8 @@ func (r *userResolver) resolveTodoConnection(
 	} else {
 		rows, err = r.db.Query("Select * FROM Todos WHERE id_User = ? AND id > ? AND Complete = ? LIMIT ?", id_User, after, *status == model.StatusCompleted, first)
 	}
-	Panic(err)
-	log.Printf("Todos %v", rows)
+	// Panic(err)
+	log.Printf("Todos %v", err)
 
 	var edges []*model.TodoEdge
 	count := 0
@@ -58,7 +58,7 @@ func (r *userResolver) resolveTodoConnection(
 		edges = append(edges, edge)
 	}
 	Panic(rows.Err())
-	rows.Close()
+	defer rows.Close()
 	pageInfo := &model.PageInfo{
 		StartCursor:     StartCursor,
 		EndCursor:       EndCursor,
