@@ -61,8 +61,8 @@ func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.Cha
 func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAllTodosInput) (*model.MarkAllTodosPayload, error) {
 	log.Printf("##### MarkAllTodos #####")
 	UserID := relay.FromGlobalID(input.UserID).ID
-	user := r.QueryUser(UserID)
 	changedTodos := r.QueryMarkAllTodos(UserID, input.Complete)
+	user := r.QueryUser(UserID)
 	payload := &model.MarkAllTodosPayload{
 		ClientMutationID: input.ClientMutationID,
 		User:             user,
