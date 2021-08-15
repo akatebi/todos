@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -34,7 +37,7 @@ func main() {
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 
 	router := chi.NewRouter()
-	router.Use(Middleware())
+	// router.Use(Middleware())
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", CORS.Handler(srv))
@@ -48,8 +51,33 @@ func main() {
 func Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// log.Printf("#### Request %#v", *r)
+			log.Printf("#### Request %#v", *r)
+
+			printBody(r)
+
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func printBody(r *http.Request) {
+	buf, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error reading request body: %v", err.Error())
+
+	}
+
+	type Graphql struct {
+		operationName string
+		variables     string
+		query         string
+	}
+
+	var graphql Graphql
+	json.Unmarshal([]byte(buf), &graphql)
+	log.Printf("%#v", graphql)
+
+	log.Printf("Request body: %v", string(buf))
+	reader := ioutil.NopCloser(bytes.NewBuffer(buf))
+	r.Body = reader
 }
