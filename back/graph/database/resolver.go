@@ -109,35 +109,38 @@ func (r *Resolver) Open() {
 		}
 	}
 
-	email := "me@gmail.com"
-	stmt, e := db.Prepare("INSERT INTO user(email) VALUES(?)")
-	Panic(e)
-	res, e := stmt.Exec(email)
-	Panic(e)
-	user_id, e := res.LastInsertId()
-	Panic(e)
-	log.Printf("Insert user_id %v", user_id)
+	emails := []string{"me@gmail.com", "test@test.com"}
+	for i, email := range emails {
+		stmt, e := db.Prepare("INSERT INTO user(email) VALUES(?)")
+		Panic(e)
+		res, e := stmt.Exec(email)
+		Panic(e)
+		user_id, e := res.LastInsertId()
+		Panic(e)
+		if i == 0 {
+			log.Printf("Insert user_id %v", user_id)
+			stmt, e = db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")
+			Panic(e)
 
-	stmt, e = db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")
-	Panic(e)
+			res, e = stmt.Exec(user_id, "Taste JavaScript", true)
+			Panic(e)
+			id, e := res.LastInsertId()
+			Panic(e)
+			log.Printf("Insert id %v", id)
 
-	res, e = stmt.Exec(user_id, "Taste JavaScript", true)
-	Panic(e)
-	id, e := res.LastInsertId()
-	Panic(e)
-	log.Printf("Insert id %v", id)
+			res, e = stmt.Exec(user_id, "Buy a unicorn", false)
+			Panic(e)
+			id, e = res.LastInsertId()
+			Panic(e)
+			log.Printf("Insert id %v", id)
 
-	res, e = stmt.Exec(user_id, "Buy a unicorn", false)
-	Panic(e)
-	id, e = res.LastInsertId()
-	Panic(e)
-	log.Printf("Insert id %v", id)
-
-	res, e = stmt.Exec(user_id, "Get a customer", false)
-	Panic(e)
-	id, e = res.LastInsertId()
-	Panic(e)
-	log.Printf("Insert id %v", id)
+			res, e = stmt.Exec(user_id, "Get a customer", false)
+			Panic(e)
+			id, e = res.LastInsertId()
+			Panic(e)
+			log.Printf("Insert id %v", id)
+		}
+	}
 
 	r.db = db
 }
