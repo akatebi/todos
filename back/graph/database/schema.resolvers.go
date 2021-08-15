@@ -16,16 +16,16 @@ import (
 
 func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error) {
 	log.Printf("##### AddTodo %v #####", input)
-	stmt, e := r.db.Prepare("INSERT INTO Todos(id_User, Text, Complete) VALUES(?,?,?)")
+	stmt, e := r.db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")
 	Panic(e)
-	UserID := relay.FromGlobalID(input.UserID).ID
-	res, e := stmt.Exec(UserID, input.Text, false)
+	user_id := relay.FromGlobalID(input.UserID).ID
+	res, e := stmt.Exec(user_id, input.Text, false)
 	Panic(e)
 	id, e := res.LastInsertId()
 	Panic(e)
 	log.Printf("Insert id %v", id)
 	todo := r.QueryTodo(strconv.FormatInt(id, 10))
-	user := r.QueryUser(UserID)
+	user := r.QueryUser(user_id)
 	payload := &model.AddTodoPayload{
 		ClientMutationID: input.ClientMutationID,
 		User:             user,
@@ -40,7 +40,7 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.ChangeTodoStatusInput) (*model.ChangeTodoStatusPayload, error) {
 	log.Printf("##### ChangeTodoStatus #####")
 	obj := relay.FromGlobalID(input.ID)
-	stmt, err := r.db.Prepare("update Todos set Complete=? where id=?")
+	stmt, err := r.db.Prepare("update todo set Complete=? where id=?")
 	Panic(err)
 	res, err := stmt.Exec(input.Complete, obj.ID)
 	Panic(err)
@@ -48,8 +48,8 @@ func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.Cha
 	Panic(err)
 	log.Printf("Rows affected %v", a)
 	todo := r.QueryTodo(obj.ID)
-	UserID := relay.FromGlobalID(input.UserID).ID
-	user := r.QueryUser(UserID)
+	user_id := relay.FromGlobalID(input.UserID).ID
+	user := r.QueryUser(user_id)
 	payload := &model.ChangeTodoStatusPayload{
 		ClientMutationID: input.ClientMutationID,
 		User:             user,
@@ -60,9 +60,9 @@ func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.Cha
 
 func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAllTodosInput) (*model.MarkAllTodosPayload, error) {
 	log.Printf("##### MarkAllTodos #####")
-	UserID := relay.FromGlobalID(input.UserID).ID
-	changedTodos := r.QueryMarkAllTodos(UserID, input.Complete)
-	user := r.QueryUser(UserID)
+	user_id := relay.FromGlobalID(input.UserID).ID
+	changedTodos := r.QueryMarkAllTodos(user_id, input.Complete)
+	user := r.QueryUser(user_id)
 	payload := &model.MarkAllTodosPayload{
 		ClientMutationID: input.ClientMutationID,
 		User:             user,
@@ -73,18 +73,18 @@ func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAll
 
 func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model.RemoveCompletedTodosInput) (*model.RemoveCompletedTodosPayload, error) {
 	log.Printf("##### RemoveCompletedTodos #####")
-	ID := relay.FromGlobalID(input.UserID).ID
+	id := relay.FromGlobalID(input.UserID).ID
 	var deletedTodoIds []string
-	rows, err := r.db.Query("SELECT ID FROM Todos WHERE id_User=? AND Complete=true", ID)
+	rows, err := r.db.Query("SELECT id FROM todo WHERE user_id=? AND complete=true", id)
 	Panic(err)
 	for rows.Next() {
-		var ID int
-		rows.Scan(&ID)
-		deletedTodoIds = append(deletedTodoIds, relay.ToGlobalID("Todo", strconv.Itoa(ID)))
+		var id int
+		rows.Scan(&id)
+		deletedTodoIds = append(deletedTodoIds, relay.ToGlobalID("Todo", strconv.Itoa(id)))
 	}
 	defer rows.Close()
-	Stmt, err := r.db.Prepare("DELETE FROM Todos WHERE id_User=? AND Complete=true")
-	res, err := Stmt.Exec(ID)
+	Stmt, err := r.db.Prepare("DELETE FROM todo WHERE user_id=? AND complete=true")
+	res, err := Stmt.Exec(id)
 	Panic(err)
 	rowsAffected, err := res.RowsAffected()
 	Panic(err)
@@ -100,9 +100,9 @@ func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model
 
 func (r *mutationResolver) RemoveTodo(ctx context.Context, input model.RemoveTodoInput) (*model.RemoveTodoPayload, error) {
 	log.Printf("##### RemoveTodo #####")
-	ID := relay.FromGlobalID(input.ID).ID
-	Stmt, err := r.db.Prepare("DELETE FROM Todos WHERE id=?")
-	res, err := Stmt.Exec(ID)
+	id := relay.FromGlobalID(input.ID).ID
+	Stmt, err := r.db.Prepare("DELETE FROM todo WHERE id=?")
+	res, err := Stmt.Exec(id)
 	Panic(err)
 	rowsAffected, err := res.RowsAffected()
 	Panic(err)
@@ -119,7 +119,7 @@ func (r *mutationResolver) RemoveTodo(ctx context.Context, input model.RemoveTod
 func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTodoInput) (*model.RenameTodoPayload, error) {
 	ID := relay.FromGlobalID(input.ID).ID
 	log.Printf("##### RenameTodo #####")
-	Stmt, err := r.db.Prepare("UPDATE Todos SET Text=? WHERE id=?")
+	Stmt, err := r.db.Prepare("UPDATE todo SET text=? WHERE id=?")
 	Panic(err)
 	res, err := Stmt.Exec(input.Text, ID)
 	Panic(err)
@@ -137,12 +137,12 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 
 func (r *queryResolver) User(ctx context.Context, email *string) (*model.User, error) {
 	log.Printf("##### User %v #####", *email)
-	var ID int
+	var id int
 	user := &model.User{}
-	r.db.QueryRow("SELECT ID, Email FROM Users WHERE email=? LIMIT 1", *email).Scan(&ID, &user.Email)
-	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=?", ID).Scan(&user.TotalCount)
-	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=? AND Complete=true", ID).Scan(&user.CompletedCount)
-	user.ID = relay.ToGlobalID("User", strconv.Itoa(ID))
+	r.db.QueryRow("SELECT id, email FROM user WHERE email=? LIMIT 1", *email).Scan(&id, &user.Email)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE user_id=?", id).Scan(&user.TotalCount)
+	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE user_id=? AND Complete=true", id).Scan(&user.CompletedCount)
+	user.ID = relay.ToGlobalID("User", strconv.Itoa(id))
 	return user, nil
 }
 
@@ -159,7 +159,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
 	log.Printf("##### Todos #####")
-	id_User := relay.FromGlobalID(obj.ID).ID
+	user_id := relay.FromGlobalID(obj.ID).ID
 	after_ := DecodeCursor(after)
 	before_ := DecodeCursor(before)
 	var first_, last_ int
@@ -169,7 +169,7 @@ func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model
 	if last != nil {
 		last_ = *last
 	}
-	return r.resolveTodoConnection(id_User, status, after_, first_, before_, last_)
+	return r.resolveTodoConnection(user_id, status, after_, first_, before_, last_)
 }
 
 // Mutation returns generated.MutationResolver implementation.

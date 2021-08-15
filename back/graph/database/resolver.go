@@ -24,40 +24,38 @@ type Resolver struct {
 }
 
 func (r *Resolver) QueryUser(id string) *model.User {
-	var ID int
 	user := &model.User{}
-	r.db.QueryRow("SELECT ID, Email FROM Users WHERE id=? LIMIT 1", id).Scan(&ID, &user.Email)
-	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=?", id).Scan(&user.TotalCount)
-	r.db.QueryRow("SELECT COUNT(*) FROM Todos WHERE id_User=? AND Complete=true", id).Scan(&user.CompletedCount)
-	user.ID = relay.ToGlobalID("User", strconv.Itoa(ID))
+	r.db.QueryRow("SELECT email FROM user WHERE id=? LIMIT 1", id).Scan(&user.Email)
+	r.db.QueryRow("SELECT COUNT(*) FROM todo WHERE user_id=?", id).Scan(&user.TotalCount)
+	r.db.QueryRow("SELECT COUNT(*) FROM todo WHERE user_id=? AND complete=true", id).Scan(&user.CompletedCount)
+	user.ID = relay.ToGlobalID("User", id)
 	return user
 }
 
 func (r *Resolver) QueryTodo(id string) *model.Todo {
-	var ID int
 	todo := &model.Todo{}
-	r.db.QueryRow("SELECT ID, Text, Complete FROM Todos WHERE id=? LIMIT 1", id).Scan(&ID, &todo.Text, &todo.Complete)
-	todo.ID = relay.ToGlobalID("Todo", strconv.Itoa(ID))
+	r.db.QueryRow("SELECT Text, Complete FROM todo WHERE id=? LIMIT 1", id).Scan(&todo.Text, &todo.Complete)
+	todo.ID = relay.ToGlobalID("Todo", id)
 	return todo
 }
 
-func (r *Resolver) QueryMarkAllTodos(id string, Complete bool) []*model.Todo {
-	log.Printf("QueryMarkAllTodos Complete %v", Complete)
-	rows, err := r.db.Query("SELECT ID, TEXT FROM Todos WHERE Complete=? AND id_User=?", !Complete, id)
+func (r *Resolver) QueryMarkAllTodos(user_id string, complete bool) []*model.Todo {
+	log.Printf("QueryMarkAllTodos complete %v", complete)
+	rows, err := r.db.Query("SELECT id, text FROM todo WHERE complete=? AND user_id=?", !complete, user_id)
 	Panic(err)
 	todos := []*model.Todo{}
 	for rows.Next() {
-		todo := &model.Todo{Complete: Complete}
-		var ID int
-		err = rows.Scan(&ID, &todo.Text)
+		todo := &model.Todo{Complete: complete}
+		var id int
+		err = rows.Scan(&id, &todo.Text)
 		Panic(err)
-		todo.ID = relay.ToGlobalID("Todo", strconv.Itoa(ID))
+		todo.ID = relay.ToGlobalID("Todo", strconv.Itoa(id))
 		todos = append(todos, todo)
 	}
 	rows.Close()
-	Stmt, err := r.db.Prepare("UPDATE Todos SET Complete=? WHERE id_User=?")
+	Stmt, err := r.db.Prepare("UPDATE todo SET complete=? WHERE user_id=?")
 	Panic(err)
-	res, err := Stmt.Exec(Complete, id)
+	res, err := Stmt.Exec(complete, user_id)
 	Panic(err)
 	rowsAffected, err := res.RowsAffected()
 	Panic(err)
@@ -83,22 +81,22 @@ func (r *Resolver) Open() {
 	fmt.Println("### Connected! ###")
 
 	cmds := []string{
-		"DROP DATABASE IF EXISTS Todos",
-		"CREATE DATABASE IF NOT EXISTS Todos",
-		"USE Todos",
-		`CREATE TABLE Users (
+		"DROP DATABASE IF EXISTS todo",
+		"CREATE DATABASE IF NOT EXISTS todo",
+		"USE todo",
+		`CREATE TABLE user (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			Email VARCHAR(32),
-			TotalCount INT DEFAULT 0,
-			CompletedCount INT DEFAULT 0
+			email VARCHAR(32),
+			totalCount INT DEFAULT 0,
+			completedCount INT DEFAULT 0
 		) ENGINE=INNODB`,
-		`CREATE TABLE Todos (
+		`CREATE TABLE todo (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			id_User INT,
-			Text VARCHAR(32),
-			Complete BOOLEAN DEFAULT false,
-			FOREIGN KEY (id_User)
-				REFERENCES Users(id)
+			user_id INT,
+			text VARCHAR(32),
+			complete BOOLEAN DEFAULT false,
+			FOREIGN KEY (user_id)
+				REFERENCES user(id)
 				ON DELETE CASCADE
 		) ENGINE=INNODB`,
 	}
@@ -111,31 +109,31 @@ func (r *Resolver) Open() {
 		}
 	}
 
-	Email := "me@gmail.com"
-	stmt, e := db.Prepare("INSERT INTO Users(Email) VALUES(?)")
+	email := "me@gmail.com"
+	stmt, e := db.Prepare("INSERT INTO user(email) VALUES(?)")
 	Panic(e)
-	res, e := stmt.Exec(Email)
+	res, e := stmt.Exec(email)
 	Panic(e)
-	id_User, e := res.LastInsertId()
+	user_id, e := res.LastInsertId()
 	Panic(e)
-	log.Printf("Insert id_User %v", id_User)
+	log.Printf("Insert user_id %v", user_id)
 
-	stmt, e = db.Prepare("INSERT INTO Todos(id_User, Text, Complete) VALUES(?,?,?)")
+	stmt, e = db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")
 	Panic(e)
 
-	res, e = stmt.Exec(id_User, "Taste JavaScript", true)
+	res, e = stmt.Exec(user_id, "Taste JavaScript", true)
 	Panic(e)
 	id, e := res.LastInsertId()
 	Panic(e)
 	log.Printf("Insert id %v", id)
 
-	res, e = stmt.Exec(id_User, "Buy a unicorn", false)
+	res, e = stmt.Exec(user_id, "Buy a unicorn", false)
 	Panic(e)
 	id, e = res.LastInsertId()
 	Panic(e)
 	log.Printf("Insert id %v", id)
 
-	res, e = stmt.Exec(id_User, "Get a customer", false)
+	res, e = stmt.Exec(user_id, "Get a customer", false)
 	Panic(e)
 	id, e = res.LastInsertId()
 	Panic(e)
