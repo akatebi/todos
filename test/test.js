@@ -19,12 +19,22 @@ describe('Testing Todo GraphQL', () => {
             query Todo($email: String!) {
                 user(email: $email) {
                     id
+                    email
+                    totalCount
+                    todos {
+                        edges {
+                            node {
+                                id
+                                text
+                            }
+                        }
+                    }
                 }
             }
         `;
         const variables = {"email": "test@test.com"}
         const resp = await query(text, variables);
-        console.log("resp", resp);
+        console.log("resp", JSON.stringify(resp, 0, 2));
     });
     test('test 1', () => {
       expect(true).toEqual(true);
