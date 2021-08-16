@@ -23,9 +23,10 @@ describe('Testing Todo GraphQL', () => {
         const variables = {"email": "test@test.com"}
         const resp = await query(text, variables);
         console.log("resp", JSON.stringify(resp, 0, 2));
-        user_id = resp.data.user.id
+        user_id = resp.data.user.id;
+        // expect()
     });
-    test('test 1', () => {
+    test('Add Todos', () => {
       expect(true).toEqual(true);
     });
   });

@@ -9,6 +9,6 @@
     "node-fetch": "^2.6.1"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --watch"
   }
 }
