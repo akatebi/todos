@@ -1,6 +1,7 @@
 const { fetch } = require("./fetch");
 
 const User = ({email}) => {
+    const variables = { email }; 
     const query = `query TodoAppQuery($email: String!) {
         user(email: $email) {
           id
@@ -62,10 +63,11 @@ const User = ({email}) => {
         totalCount
         completedCount
       }`;
-      return fetch({query, variables: { email } });
+      return fetch({query, variables});
 }
 
 const AddTodo = ({text, userId, clientMutationId}) => {
+const variables = {text, userId, clientMutationId};
 const query = `mutation addTodo($text: String!, $userId: ID!, $clientMutationId: String) {
         addTodo(
           input: { text: $text, userId: $userId, clientMutationId: $clientMutationId }
@@ -96,7 +98,35 @@ const query = `mutation addTodo($text: String!, $userId: ID!, $clientMutationId:
           }
         }
       }`;
-    return fetch({query, variables: {text, userId, clientMutationId}});
+      return fetch({query, variables});
+    }
+
+const MarkAllTodos = ({complete, userId, clientMutationId}) => {
+  const variables = {complete, userId, clientMutationId};
+  const query = `mutation markAllTodos($complete: Boolean!, $userId: ID!, $clientMutationId: String) {
+    markAllTodos(input: { complete: $complete, userId: $userId, clientMutationId: $clientMutationId}) {
+      clientMutationId
+      user {
+        id
+      }
+      changedTodos {
+        id
+        text
+        complete
+      }
+    }
+  }
+  `;
+  return fetch({query, variables});
 }
+
+
+
+
+
+
+
+
 exports.User = User;
 exports.AddTodo = AddTodo; 
+exports.MarkAllTodos = MarkAllTodos; 
