@@ -15,7 +15,7 @@ import (
 )
 
 func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error) {
-	log.Printf("##### AddTodo %v #####", input)
+	log.Printf("##### AddTodo %#v #####", input)
 	stmt, e := r.db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")
 	Panic(e)
 	user_id := relay.FromGlobalID(input.UserID).ID

@@ -1,8 +1,10 @@
+const { fetch } = require("./fetch");
 
-export const user = ({email}) => {
+const User = ({email}) => {
     const query = `query TodoAppQuery($email: String!) {
-        user(id: $email) {
+        user(email: $email) {
           id
+          email
           totalCount
           ...TodoListFooter_user
           ...TodoList_user
@@ -12,7 +14,7 @@ export const user = ({email}) => {
         id
         email
         completedCount
-        todos(first: 1000) {
+        todos(first: 100) {
           edges {
             node {
               id
@@ -29,7 +31,7 @@ export const user = ({email}) => {
         totalCount
       }
       fragment TodoList_user on User {
-        todos(first: 2147) {
+        todos(first: 100) {
           edges {
             node {
               id
@@ -57,38 +59,44 @@ export const user = ({email}) => {
       }
       fragment Todo_user on User {
         id
-        userId
         totalCount
         completedCount
       }`;
-      return {text, variables: { email } };
+      return fetch({query, variables: { email } });
 }
 
-export const addTodo = ({text, userId, clientMutationId}) => {
-const query = `mutation addTodo(text: String!, userId: ID!, clientMutationId: String) {
-        addTodo(input: {text: $text, userId: $userId, clientMutationId: $clientMutationId}) {
-        clientMutationId,
-        user {
-            email totalCount completedCount
+const AddTodo = ({text, userId, clientMutationId}) => {
+const query = `mutation addTodo($text: String!, $userId: ID!, $clientMutationId: String) {
+        addTodo(
+          input: { text: $text, userId: $userId, clientMutationId: $clientMutationId }
+        ) {
+          clientMutationId
+          user {
+            email
+            totalCount
+            completedCount
             todos(first: 100) {
-                edges {
+              edges {
                 cursor
                 node {
-                    id
-                    text
-                    complete
+                  id
+                  text
+                  complete
                 }
               }
             }
-        }
-        todoEdge {
+          }
+          todoEdge {
             cursor
             node {
-                id
-                text
-                complete
+              id
+              text
+              complete
             }
+          }
         }
-    }}`;
-    return {query, variables: {text, userId, clientMutationId}};
+      }`;
+    return fetch({query, variables: {text, userId, clientMutationId}});
 }
+exports.User = User;
+exports.AddTodo = AddTodo; 
