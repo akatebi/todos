@@ -108,6 +108,8 @@ const MarkAllTodos = ({complete, userId, clientMutationId}) => {
       clientMutationId
       user {
         id
+        completedCount
+        totalCount
       }
       changedTodos {
         id
