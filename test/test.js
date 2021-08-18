@@ -11,7 +11,7 @@ describe('Testing Todo GraphQL', () => {
     });
     test("AddTodo", async() => {
       const clientMutationId = "1";
-      const text = "Get a job";
+      const text = "Get a customer";
       const resp = await AddTodo({text, userId, clientMutationId});
       // console.log("resp", JSON.stringify(resp, 0, 2));
       expect(resp).toMatchSnapshot();
