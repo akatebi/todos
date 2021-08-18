@@ -129,8 +129,8 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error)
 	ChangeTodoStatus(ctx context.Context, input model.ChangeTodoStatusInput) (*model.ChangeTodoStatusPayload, error)
-	MarkAllTodos(ctx context.Context, input model.MarkAllTodosInput) (*model.MarkAllTodosPayload, error)
 	ClearCompletedTodos(ctx context.Context, input model.ClearCompletedTodosInput) (*model.ClearCompletedTodosPayload, error)
+	MarkAllTodos(ctx context.Context, input model.MarkAllTodosInput) (*model.MarkAllTodosPayload, error)
 	RemoveTodo(ctx context.Context, input model.RemoveTodoInput) (*model.RemoveTodoPayload, error)
 	RenameTodo(ctx context.Context, input model.RenameTodoInput) (*model.RenameTodoPayload, error)
 }
@@ -601,8 +601,8 @@ type Todo implements Node {
 type Mutation {
   addTodo(input: AddTodoInput!): AddTodoPayload
   changeTodoStatus(input: ChangeTodoStatusInput!): ChangeTodoStatusPayload
-  markAllTodos(input: MarkAllTodosInput!): MarkAllTodosPayload
   clearCompletedTodos(input: ClearCompletedTodosInput!): ClearCompletedTodosPayload
+  markAllTodos(input: MarkAllTodosInput!): MarkAllTodosPayload
   removeTodo(input: RemoveTodoInput!): RemoveTodoPayload
   renameTodo(input: RenameTodoInput!): RenameTodoPayload
 }
@@ -1394,45 +1394,6 @@ func (ec *executionContext) _Mutation_changeTodoStatus(ctx context.Context, fiel
 	return ec.marshalOChangeTodoStatusPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐChangeTodoStatusPayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_markAllTodos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_markAllTodos_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarkAllTodos(rctx, args["input"].(model.MarkAllTodosInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.MarkAllTodosPayload)
-	fc.Result = res
-	return ec.marshalOMarkAllTodosPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐMarkAllTodosPayload(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Mutation_clearCompletedTodos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1470,6 +1431,45 @@ func (ec *executionContext) _Mutation_clearCompletedTodos(ctx context.Context, f
 	res := resTmp.(*model.ClearCompletedTodosPayload)
 	fc.Result = res
 	return ec.marshalOClearCompletedTodosPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐClearCompletedTodosPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_markAllTodos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_markAllTodos_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().MarkAllTodos(rctx, args["input"].(model.MarkAllTodosInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MarkAllTodosPayload)
+	fc.Result = res
+	return ec.marshalOMarkAllTodosPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐMarkAllTodosPayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_removeTodo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3903,10 +3903,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_addTodo(ctx, field)
 		case "changeTodoStatus":
 			out.Values[i] = ec._Mutation_changeTodoStatus(ctx, field)
-		case "markAllTodos":
-			out.Values[i] = ec._Mutation_markAllTodos(ctx, field)
 		case "clearCompletedTodos":
 			out.Values[i] = ec._Mutation_clearCompletedTodos(ctx, field)
+		case "markAllTodos":
+			out.Values[i] = ec._Mutation_markAllTodos(ctx, field)
 		case "removeTodo":
 			out.Values[i] = ec._Mutation_removeTodo(ctx, field)
 		case "renameTodo":

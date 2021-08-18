@@ -26,10 +26,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "1",
       "todoEdge": Object {
-        "cursor": "Ng==",
+        "cursor": "NQ==",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo2",
+          "id": "VG9kbzo1",
           "text": "Get a customer",
         },
       },
@@ -39,10 +39,10 @@ Object {
         "todos": Object {
           "edges": Array [
             Object {
-              "cursor": "Ng==",
+              "cursor": "NQ==",
               "node": Object {
                 "complete": false,
-                "id": "VG9kbzo2",
+                "id": "VG9kbzo1",
                 "text": "Get a customer",
               },
             },
@@ -61,7 +61,7 @@ Object {
     "clearCompletedTodos": Object {
       "clientMutationId": "3",
       "deletedTodoIds": Array [
-        "VG9kbzo2",
+        "VG9kbzo1",
       ],
       "user": Object {
         "completedCount": 0,
@@ -80,7 +80,7 @@ Object {
       "changedTodos": Array [
         Object {
           "complete": true,
-          "id": "VG9kbzo2",
+          "id": "VG9kbzo1",
           "text": "Get a customer",
         },
       ],

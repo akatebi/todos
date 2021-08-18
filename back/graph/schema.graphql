@@ -46,8 +46,8 @@ type Todo implements Node {
 type Mutation {
   addTodo(input: AddTodoInput!): AddTodoPayload
   changeTodoStatus(input: ChangeTodoStatusInput!): ChangeTodoStatusPayload
-  markAllTodos(input: MarkAllTodosInput!): MarkAllTodosPayload
   clearCompletedTodos(input: ClearCompletedTodosInput!): ClearCompletedTodosPayload
+  markAllTodos(input: MarkAllTodosInput!): MarkAllTodosPayload
   removeTodo(input: RemoveTodoInput!): RemoveTodoPayload
   renameTodo(input: RenameTodoInput!): RenameTodoPayload
 }

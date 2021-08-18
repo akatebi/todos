@@ -2,7 +2,7 @@ const { fetch } = require("./fetch");
 
 const User = ({email}) => {
     const variables = { email }; 
-    const query = `query TodoAppQuery($email: String!) {
+    const query = `query User($email: String!) {
         user(email: $email) {
           id
           email
@@ -101,13 +101,10 @@ const ClearCompletedTodos = ({userId, clientMutationId}) => {
 }
 
 
-
-
-
-
-
-
 exports.User = User;
 exports.AddTodo = AddTodo; 
-exports.MarkAllTodos = MarkAllTodos; 
 exports.ClearCompletedTodos = ClearCompletedTodos; 
+// exports.ChangeTodoStatus = RemoveTodoStatus; 
+exports.MarkAllTodos = MarkAllTodos; 
+// exports.RemoveTodo = RemoveTodo; 
+// exports.RenameTodo = RenameTodo; 
