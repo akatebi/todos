@@ -26,29 +26,126 @@ Object {
     "addTodo": Object {
       "clientMutationId": "1",
       "todoEdge": Object {
-        "cursor": "NQ==",
+        "cursor": "Nzg=",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo1",
-          "text": "Get a customer",
+          "id": "VG9kbzo3OA==",
+          "text": "Get a customer 1",
         },
       },
       "user": Object {
         "completedCount": 0,
         "email": "test@test.com",
-        "todos": Object {
-          "edges": Array [
-            Object {
-              "cursor": "NQ==",
-              "node": Object {
-                "complete": false,
-                "id": "VG9kbzo1",
-                "text": "Get a customer",
-              },
-            },
-          ],
-        },
         "totalCount": 1,
+      },
+    },
+  },
+}
+`;
+
+exports[`Testing Todo GraphQL AddTodo 2`] = `
+Object {
+  "data": Object {
+    "addTodo": Object {
+      "clientMutationId": "1",
+      "todoEdge": Object {
+        "cursor": "Nzk=",
+        "node": Object {
+          "complete": false,
+          "id": "VG9kbzo3OQ==",
+          "text": "Get a customer 2",
+        },
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "test@test.com",
+        "totalCount": 2,
+      },
+    },
+  },
+}
+`;
+
+exports[`Testing Todo GraphQL AddTodo 3`] = `
+Object {
+  "data": Object {
+    "addTodo": Object {
+      "clientMutationId": "1",
+      "todoEdge": Object {
+        "cursor": "ODA=",
+        "node": Object {
+          "complete": false,
+          "id": "VG9kbzo4MA==",
+          "text": "Get a customer 3",
+        },
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "test@test.com",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Testing Todo GraphQL ChangeTodoStatus 1`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "4",
+      "todo": Object {
+        "complete": false,
+        "id": "VG9kbzo3OA==",
+        "text": "",
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "test@test.com",
+        "id": "VXNlcjoy",
+        "totalCount": 0,
+      },
+    },
+  },
+}
+`;
+
+exports[`Testing Todo GraphQL ChangeTodoStatus 2`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "4",
+      "todo": Object {
+        "complete": false,
+        "id": "VG9kbzo3OQ==",
+        "text": "",
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "test@test.com",
+        "id": "VXNlcjoy",
+        "totalCount": 0,
+      },
+    },
+  },
+}
+`;
+
+exports[`Testing Todo GraphQL ChangeTodoStatus 3`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "4",
+      "todo": Object {
+        "complete": false,
+        "id": "VG9kbzo4MA==",
+        "text": "",
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "test@test.com",
+        "id": "VXNlcjoy",
+        "totalCount": 0,
       },
     },
   },
@@ -61,7 +158,9 @@ Object {
     "clearCompletedTodos": Object {
       "clientMutationId": "3",
       "deletedTodoIds": Array [
-        "VG9kbzo1",
+        "VG9kbzo3OA==",
+        "VG9kbzo3OQ==",
+        "VG9kbzo4MA==",
       ],
       "user": Object {
         "completedCount": 0,
@@ -80,15 +179,25 @@ Object {
       "changedTodos": Array [
         Object {
           "complete": true,
-          "id": "VG9kbzo1",
-          "text": "Get a customer",
+          "id": "VG9kbzo3OA==",
+          "text": "Get a customer 1",
+        },
+        Object {
+          "complete": true,
+          "id": "VG9kbzo3OQ==",
+          "text": "Get a customer 2",
+        },
+        Object {
+          "complete": true,
+          "id": "VG9kbzo4MA==",
+          "text": "Get a customer 3",
         },
       ],
       "clientMutationId": "2",
       "user": Object {
-        "completedCount": 1,
+        "completedCount": 3,
         "id": "VXNlcjoy",
-        "totalCount": 1,
+        "totalCount": 3,
       },
     },
   },

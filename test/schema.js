@@ -37,16 +37,6 @@ const query = `mutation addTodo($text: String!, $userId: ID!, $clientMutationId:
             email
             totalCount
             completedCount
-            todos(first: 100) {
-              edges {
-                cursor
-                node {
-                  id
-                  text
-                  complete
-                }
-              }
-            }
           }
           todoEdge {
             cursor
@@ -100,11 +90,42 @@ const ClearCompletedTodos = ({userId, clientMutationId}) => {
   return fetch({query, variables});
 }
 
+const ChangeTodoStatus = ({complete, id, userId, clientMutationId}) => {
+  const variables = {complete, id, userId, clientMutationId};
+  const query = `mutation ChangeTodoStatus(
+    $complete: Boolean!
+    $id: ID!
+    $userId: ID!
+    $clientMutationId: String
+  ) {
+    changeTodoStatus(input: { 
+      complete: $complete, id: $id, userId: $userId, 
+      clientMutationId: $clientMutationId }) {
+      todo {
+        id
+        text
+        complete
+      }
+      user {
+        id
+        email
+        totalCount
+        completedCount
+      }
+      clientMutationId
+    }
+  }  
+  `;
+  return fetch({query, variables});
+}
+
+
+
 
 exports.User = User;
 exports.AddTodo = AddTodo; 
 exports.ClearCompletedTodos = ClearCompletedTodos; 
-// exports.ChangeTodoStatus = RemoveTodoStatus; 
+exports.ChangeTodoStatus = ChangeTodoStatus; 
 exports.MarkAllTodos = MarkAllTodos; 
 // exports.RemoveTodo = RemoveTodo; 
 // exports.RenameTodo = RenameTodo; 
