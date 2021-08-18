@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `
+Object {
+  "data": Object {
+    "user": Object {
+      "completedCount": 0,
+      "email": "",
+      "id": "VXNlcjoy",
+      "todos": Object {
+        "edges": null,
+        "pageInfo": Object {
+          "endCursor": null,
+          "hasNextPage": true,
+        },
+      },
+      "totalCount": 0,
+    },
+  },
+}
+`;
+
+exports[`Testing Todo GraphQL AddTodo 1`] = `
+Object {
+  "data": Object {
+    "addTodo": Object {
+      "clientMutationId": "1",
+      "todoEdge": Object {
+        "cursor": "OQ==",
+        "node": Object {
+          "complete": false,
+          "id": "VG9kbzo5",
+          "text": "Get a job",
+        },
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "test@test.com",
+        "todos": Object {
+          "edges": Array [
+            Object {
+              "cursor": "OQ==",
+              "node": Object {
+                "complete": false,
+                "id": "VG9kbzo5",
+                "text": "Get a job",
+              },
+            },
+          ],
+        },
+        "totalCount": 1,
+      },
+    },
+  },
+}
+`;
+
+exports[`Testing Todo GraphQL MarkAllTodos 1`] = `
+Object {
+  "data": Object {
+    "markAllTodos": Object {
+      "changedTodos": Array [
+        Object {
+          "complete": true,
+          "id": "VG9kbzo5",
+          "text": "Get a job",
+        },
+      ],
+      "clientMutationId": "2",
+      "user": Object {
+        "completedCount": 1,
+        "id": "VXNlcjoy",
+        "totalCount": 1,
+      },
+    },
+  },
+}
+`;
+
+exports[`Testing Todo GraphQL RemoveCompletedTodos 1`] = `
+Object {
+  "data": Object {
+    "removeCompletedTodos": Object {
+      "clientMutationId": "3",
+      "deletedTodoIds": Array [
+        "VG9kbzo5",
+      ],
+      "user": Object {
+        "completedCount": 0,
+        "id": "VXNlcjoy",
+        "totalCount": 0,
+      },
+    },
+  },
+}
+`;
