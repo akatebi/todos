@@ -6,62 +6,23 @@ const User = ({email}) => {
         user(email: $email) {
           id
           email
+          completedCount
           totalCount
-          ...TodoListFooter_user
-          ...TodoList_user
-        }
-      }
-      fragment TodoListFooter_user on User {
-        id
-        email
-        completedCount
-        todos(first: 100) {
-          edges {
-            node {
-              id
-              complete
-              __typename
+          todos(first: 100) {
+            edges {
+              cursor
+              node {
+                id
+                complete
+                __typename
+              }
             }
-            cursor
-          }
-          pageInfo {
-            endCursor
-            hasNextPage
-          }
-        }
-        totalCount
-      }
-      fragment TodoList_user on User {
-        todos(first: 100) {
-          edges {
-            node {
-              id
-              complete
-              ...Todo_todo
-              __typename
+            pageInfo {
+              endCursor
+              hasNextPage
             }
-            cursor
-          }
-          pageInfo {
-            endCursor
-            hasNextPage
           }
         }
-        id
-        email
-        totalCount
-        completedCount
-        ...Todo_user
-      }
-      fragment Todo_todo on Todo {
-        complete
-        id
-        text
-      }
-      fragment Todo_user on User {
-        id
-        totalCount
-        completedCount
       }`;
       return fetch({query, variables});
 }

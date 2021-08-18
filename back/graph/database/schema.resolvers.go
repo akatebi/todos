@@ -139,7 +139,13 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 func (r *queryResolver) User(ctx context.Context, email *string) (*model.User, error) {
 	log.Printf("##### User %v #####", *email)
 	var user_id int
-	user := &model.User{}
+	user := &model.User{
+		ID:             "",
+		Email:          *email,
+		Todos:          &model.TodoConnection{},
+		TotalCount:     0,
+		CompletedCount: 0,
+	}
 	r.db.QueryRow("SELECT id FROM user WHERE email=? LIMIT 1", *email).Scan(&user_id)
 	r.db.QueryRow("SELECT COUNT(*) FROM todo WHERE user_id=?", user_id).Scan(&user.TotalCount)
 	r.db.QueryRow("SELECT COUNT(*) FROM todo WHERE user_id=? AND Complete=true", user_id).Scan(&user.CompletedCount)

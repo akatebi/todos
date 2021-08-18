@@ -5,7 +5,7 @@ Object {
   "data": Object {
     "user": Object {
       "completedCount": 0,
-      "email": "",
+      "email": "test@test.com",
       "id": "VXNlcjoy",
       "todos": Object {
         "edges": null,
@@ -26,10 +26,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "1",
       "todoEdge": Object {
-        "cursor": "OQ==",
+        "cursor": "MTI=",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo5",
+          "id": "VG9kbzoxMg==",
           "text": "Get a job",
         },
       },
@@ -39,10 +39,10 @@ Object {
         "todos": Object {
           "edges": Array [
             Object {
-              "cursor": "OQ==",
+              "cursor": "MTI=",
               "node": Object {
                 "complete": false,
-                "id": "VG9kbzo5",
+                "id": "VG9kbzoxMg==",
                 "text": "Get a job",
               },
             },
@@ -62,7 +62,7 @@ Object {
       "changedTodos": Array [
         Object {
           "complete": true,
-          "id": "VG9kbzo5",
+          "id": "VG9kbzoxMg==",
           "text": "Get a job",
         },
       ],
@@ -83,7 +83,7 @@ Object {
     "removeCompletedTodos": Object {
       "clientMutationId": "3",
       "deletedTodoIds": Array [
-        "VG9kbzo5",
+        "VG9kbzoxMg==",
       ],
       "user": Object {
         "completedCount": 0,
