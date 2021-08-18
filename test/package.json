@@ -6,7 +6,8 @@
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.0.6",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "prettier": "^2.3.2"
   },
   "scripts": {
     "test": "jest --watch"

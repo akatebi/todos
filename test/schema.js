@@ -72,7 +72,6 @@ const query = `mutation addTodo($text: String!, $userId: ID!, $clientMutationId:
         addTodo(
           input: { text: $text, userId: $userId, clientMutationId: $clientMutationId }
         ) {
-          clientMutationId
           user {
             email
             totalCount
@@ -96,6 +95,7 @@ const query = `mutation addTodo($text: String!, $userId: ID!, $clientMutationId:
               complete
             }
           }
+          clientMutationId
         }
       }`;
       return fetch({query, variables});
@@ -105,7 +105,6 @@ const MarkAllTodos = ({complete, userId, clientMutationId}) => {
   const variables = {complete, userId, clientMutationId};
   const query = `mutation markAllTodos($complete: Boolean!, $userId: ID!, $clientMutationId: String) {
     markAllTodos(input: { complete: $complete, userId: $userId, clientMutationId: $clientMutationId}) {
-      clientMutationId
       user {
         id
         completedCount
@@ -116,6 +115,24 @@ const MarkAllTodos = ({complete, userId, clientMutationId}) => {
         text
         complete
       }
+      clientMutationId
+    }
+  }
+  `;
+  return fetch({query, variables});
+}
+
+const RemoveCompletedTodos = ({userId, clientMutationId}) => {
+  const variables = {userId, clientMutationId};
+  const query = `mutation removeCompletedTodos($userId: ID!, $clientMutationId: String) {
+    removeCompletedTodos(input: {userId: $userId, clientMutationId: $clientMutationId}) {
+      deletedTodoIds
+      user {
+        id
+        completedCount
+        totalCount
+      }
+      clientMutationId
     }
   }
   `;
@@ -132,3 +149,4 @@ const MarkAllTodos = ({complete, userId, clientMutationId}) => {
 exports.User = User;
 exports.AddTodo = AddTodo; 
 exports.MarkAllTodos = MarkAllTodos; 
+exports.RemoveCompletedTodos = RemoveCompletedTodos; 

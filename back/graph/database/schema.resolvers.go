@@ -89,7 +89,8 @@ func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model
 	rowsAffected, err := res.RowsAffected()
 	Panic(err)
 	log.Printf("Rows Affected %v", rowsAffected)
-	user := r.QueryUser(input.UserID)
+	user_id := relay.FromGlobalID(input.UserID).ID
+	user := r.QueryUser(user_id)
 	payload := &model.RemoveCompletedTodosPayload{
 		ClientMutationID: input.ClientMutationID,
 		DeletedTodoIds:   deletedTodoIds,

@@ -1,4 +1,4 @@
-const {User, AddTodo, MarkAllTodos} = require("./schema");
+const {User, AddTodo, MarkAllTodos, RemoveCompletedTodos} = require("./schema");
 
 describe('Testing Todo GraphQL', () => {
     let userId;
@@ -18,6 +18,12 @@ describe('Testing Todo GraphQL', () => {
       const clientMutationId = "2";
       const complete = true;
       const resp = await MarkAllTodos({complete, userId, clientMutationId});
+      console.log("resp", JSON.stringify(resp, 0, 2));
+    });
+    test("RemoveCompletedTodos", async() => {
+      const clientMutationId = "3";
+      const complete = true;
+      const resp = await RemoveCompletedTodos({userId, clientMutationId});
       console.log("resp", JSON.stringify(resp, 0, 2));
     });
   });
