@@ -42,7 +42,7 @@ export default function TodoList(props: Props) {
       const complete = e.currentTarget.checked;
       console.log("#### complete", complete);
 
-      if (todos != null && todos.edges != null) {
+      if (todos?.edges != null) {
         const todoIds = todos.edges
           .map(edge => edge?.node?.id)
           .filter(id => id != null);

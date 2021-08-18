@@ -71,7 +71,7 @@ func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAll
 	return payload, nil
 }
 
-func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model.RemoveCompletedTodosInput) (*model.RemoveCompletedTodosPayload, error) {
+func (r *mutationResolver) ClearCompletedTodos(ctx context.Context, input model.ClearCompletedTodosInput) (*model.ClearCompletedTodosPayload, error) {
 	log.Printf("##### RemoveCompletedTodos #####")
 	id := relay.FromGlobalID(input.UserID).ID
 	var deletedTodoIds []string
@@ -91,7 +91,7 @@ func (r *mutationResolver) RemoveCompletedTodos(ctx context.Context, input model
 	log.Printf("Rows Affected %v", rowsAffected)
 	user_id := relay.FromGlobalID(input.UserID).ID
 	user := r.QueryUser(user_id)
-	payload := &model.RemoveCompletedTodosPayload{
+	payload := &model.ClearCompletedTodosPayload{
 		ClientMutationID: input.ClientMutationID,
 		DeletedTodoIds:   deletedTodoIds,
 		User:             user,

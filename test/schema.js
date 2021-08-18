@@ -83,10 +83,10 @@ const MarkAllTodos = ({complete, userId, clientMutationId}) => {
   return fetch({query, variables});
 }
 
-const RemoveCompletedTodos = ({userId, clientMutationId}) => {
+const ClearCompletedTodos = ({userId, clientMutationId}) => {
   const variables = {userId, clientMutationId};
-  const query = `mutation removeCompletedTodos($userId: ID!, $clientMutationId: String) {
-    removeCompletedTodos(input: {userId: $userId, clientMutationId: $clientMutationId}) {
+  const query = `mutation clearCompletedTodos($userId: ID!, $clientMutationId: String) {
+    clearCompletedTodos(input: {userId: $userId, clientMutationId: $clientMutationId}) {
       deletedTodoIds
       user {
         id
@@ -110,4 +110,4 @@ const RemoveCompletedTodos = ({userId, clientMutationId}) => {
 exports.User = User;
 exports.AddTodo = AddTodo; 
 exports.MarkAllTodos = MarkAllTodos; 
-exports.RemoveCompletedTodos = RemoveCompletedTodos; 
+exports.ClearCompletedTodos = ClearCompletedTodos; 

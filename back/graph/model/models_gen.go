@@ -37,6 +37,17 @@ type ChangeTodoStatusPayload struct {
 	ClientMutationID *string `json:"clientMutationId"`
 }
 
+type ClearCompletedTodosInput struct {
+	UserID           string  `json:"userId"`
+	ClientMutationID *string `json:"clientMutationId"`
+}
+
+type ClearCompletedTodosPayload struct {
+	DeletedTodoIds   []string `json:"deletedTodoIds"`
+	User             *User    `json:"user"`
+	ClientMutationID *string  `json:"clientMutationId"`
+}
+
 type MarkAllTodosInput struct {
 	Complete         bool    `json:"complete"`
 	UserID           string  `json:"userId"`
@@ -54,17 +65,6 @@ type PageInfo struct {
 	EndCursor       *string `json:"endCursor"`
 	HasPreviousPage bool    `json:"hasPreviousPage"`
 	StartCursor     *string `json:"startCursor"`
-}
-
-type RemoveCompletedTodosInput struct {
-	UserID           string  `json:"userId"`
-	ClientMutationID *string `json:"clientMutationId"`
-}
-
-type RemoveCompletedTodosPayload struct {
-	DeletedTodoIds   []string `json:"deletedTodoIds"`
-	User             *User    `json:"user"`
-	ClientMutationID *string  `json:"clientMutationId"`
 }
 
 type RemoveTodoInput struct {
