@@ -22,6 +22,7 @@ func main() {
               cursor
               node {
                 id
+				text
                 complete
                 __typename
               }
@@ -37,16 +38,18 @@ func main() {
 		Email string `json:"email"`
 	}
 	type GraphQL struct {
-		query      string `json:"query"`
-		variables  Variables `json:"email"`
+		Query     string    `json:"query"`
+		Variables Variables `json:"variables"`
 	}
-	variables := []{email: "me@gmail.com"}
+	body := &GraphQL{Query: query, Variables: Variables{Email: "me@gmail.com"}}
 	fmt.Println("Calling API...")
 	client := &http.Client{}
 	// req, err := http.NewRequest("GET", "https://icanhazdadjoke.com/", nil)
+	// body := bytes.NewBuffer([]byte(graphql))
 	URL := "http://localhost:8080/query"
-	body := bytes.NewBuffer([]byte("HEY"))
-	req, err := http.NewRequest("POST", URL, body)
+	payloadBuf := new(bytes.Buffer)
+	json.NewEncoder(payloadBuf).Encode(body)
+	req, err := http.NewRequest("POST", URL, payloadBuf)
 	if err != nil {
 		fmt.Print(err.Error())
 	}
@@ -70,8 +73,17 @@ func main() {
 	// var responseObject Response
 	// json.Unmarshal(bodyBytes, &responseObject)
 	// fmt.Printf("API Response as struct %+v\n", responseObject)
+	// type GraphQL struct {
+	// 	Data model.User
+	// 	Error error
+	// }
 
-	user := &model.User{}
-	json.Unmarshal(bodyBytes, user)
-	fmt.Printf("User %+v\n", user)
+	type GraphQLResp struct {
+		Data  struct{ User model.User }
+		Error interface{}
+	}
+	// var res interface{}
+	var res GraphQLResp
+	json.Unmarshal(bodyBytes, &res)
+	fmt.Printf("%#v\n", res)
 }
