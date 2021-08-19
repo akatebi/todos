@@ -1,4 +1,6 @@
 const {
+  AddUser,
+  RemoveUser,
   User,
   AddTodo,
   ChangeTodoStatus,
@@ -9,12 +11,14 @@ const {
 describe("Testing Todo GraphQL", () => {
   let userId;
   let todoIds = [];
-  beforeAll(async () => {
-    const email = "test@test.com";
-    const resp = await User({ email });
+  beforeEach(async () => {
+    const email = "test0@test.com";
+    const clientMutationId = "test0-0";
+    const resp1 = await RemoveUser({ email, clientMutationId });
+    const resp2 = await AddUser({ email, clientMutationId });
     // console.log("resp", JSON.stringify(resp, 0, 2));
-    expect(resp).toMatchSnapshot();
-    userId = resp.data.user.id;
+    expect(resp2).toMatchSnapshot();
+    userId = resp2.data.addUser.id;
   });
   test("AddTodo", async () => {
     const clientMutationId = "1";

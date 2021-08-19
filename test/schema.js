@@ -1,9 +1,29 @@
 const { fetch } = require("./fetch");
 
+const AddUser = ({email, clientMutationId}) => {
+  const variables = { email, clientMutationId };
+  const query = `mutation AddUser($email: String!, $clientMutationId: String ) {
+    addUser(input: { email: $email, clientMutationId: $clientMutationId }) {
+      id
+      clientMutationId
+    }}`;
+    return fetch({query, variables});
+}
+
+const RemoveUser = ({email, clientMutationId}) => {
+  const variables = { email, clientMutationId };
+  const query = `mutatation RemoveUser($email: String!, $clientMutationId: String) {
+    removeUser(input: { email: $email, clientMutationId: $clientMutationId }) {
+      clientMutationId
+    }}`;
+    return fetch({query, variables});
+}
+
+
 const User = ({email}) => {
     const variables = { email }; 
-    const query = `query User($email: String!) {
-        user(email: $email) {
+    const query = `query User($email: String!, $clientMutationId: String) {
+        user(email: $email, clientMutationId: $clientMutationId) {
           id
           email
           completedCount
@@ -122,6 +142,8 @@ const ChangeTodoStatus = ({complete, id, userId, clientMutationId}) => {
 
 
 
+exports.AddUser = AddUser;
+exports.RemoveUser = RemoveUser;
 exports.User = User;
 exports.AddTodo = AddTodo; 
 exports.ClearCompletedTodos = ClearCompletedTodos; 
