@@ -65,7 +65,7 @@ type AddUserPayload {
 }
 
 input RemoveUserInput {
-  id: String!
+  email: String!
   clientMutationId: String  
 }
 

@@ -90,7 +90,7 @@ type RemoveTodoPayload struct {
 }
 
 type RemoveUserInput struct {
-	ID               string  `json:"id"`
+	Email            string  `json:"email"`
 	ClientMutationID *string `json:"clientMutationId"`
 }
 

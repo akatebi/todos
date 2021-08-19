@@ -32,9 +32,8 @@ func (r *mutationResolver) AddUser(ctx context.Context, input model.AddUserInput
 
 func (r *mutationResolver) RemoveUser(ctx context.Context, input model.RemoveUserInput) (*model.RemoveUserPayload, error) {
 	log.Printf("##### RemoveUser #####")
-	id := relay.FromGlobalID(input.ID).ID
-	Stmt, err := r.db.Prepare("DELETE FROM user WHERE id=?")
-	res, err := Stmt.Exec(id)
+	Stmt, err := r.db.Prepare("DELETE FROM user WHERE email=?")
+	res, err := Stmt.Exec(input.Email)
 	Panic(err)
 	rowsAffected, err := res.RowsAffected()
 	Panic(err)

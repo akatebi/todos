@@ -678,7 +678,7 @@ type AddUserPayload {
 }
 
 input RemoveUserInput {
-  id: String!
+  email: String!
   clientMutationId: String  
 }
 
@@ -4007,11 +4007,11 @@ func (ec *executionContext) unmarshalInputRemoveUserInput(ctx context.Context, o
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
+		case "email":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
