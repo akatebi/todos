@@ -26,10 +26,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "1",
       "todoEdge": Object {
-        "cursor": "Nzg=",
+        "cursor": "NDY=",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo3OA==",
+          "id": "VG9kbzo0Ng==",
           "text": "Get a customer 1",
         },
       },
@@ -49,10 +49,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "1",
       "todoEdge": Object {
-        "cursor": "Nzk=",
+        "cursor": "NDc=",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo3OQ==",
+          "id": "VG9kbzo0Nw==",
           "text": "Get a customer 2",
         },
       },
@@ -72,10 +72,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "1",
       "todoEdge": Object {
-        "cursor": "ODA=",
+        "cursor": "NDg=",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo4MA==",
+          "id": "VG9kbzo0OA==",
           "text": "Get a customer 3",
         },
       },
@@ -96,7 +96,7 @@ Object {
       "clientMutationId": "4",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzo3OA==",
+        "id": "VG9kbzo0Ng==",
         "text": "",
       },
       "user": Object {
@@ -117,7 +117,7 @@ Object {
       "clientMutationId": "4",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzo3OQ==",
+        "id": "VG9kbzo0Nw==",
         "text": "",
       },
       "user": Object {
@@ -138,7 +138,7 @@ Object {
       "clientMutationId": "4",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzo4MA==",
+        "id": "VG9kbzo0OA==",
         "text": "",
       },
       "user": Object {
@@ -158,9 +158,9 @@ Object {
     "clearCompletedTodos": Object {
       "clientMutationId": "3",
       "deletedTodoIds": Array [
-        "VG9kbzo3OA==",
-        "VG9kbzo3OQ==",
-        "VG9kbzo4MA==",
+        "VG9kbzo0Ng==",
+        "VG9kbzo0Nw==",
+        "VG9kbzo0OA==",
       ],
       "user": Object {
         "completedCount": 0,
@@ -179,17 +179,17 @@ Object {
       "changedTodos": Array [
         Object {
           "complete": true,
-          "id": "VG9kbzo3OA==",
+          "id": "VG9kbzo0Ng==",
           "text": "Get a customer 1",
         },
         Object {
           "complete": true,
-          "id": "VG9kbzo3OQ==",
+          "id": "VG9kbzo0Nw==",
           "text": "Get a customer 2",
         },
         Object {
           "complete": true,
-          "id": "VG9kbzo4MA==",
+          "id": "VG9kbzo0OA==",
           "text": "Get a customer 3",
         },
       ],
