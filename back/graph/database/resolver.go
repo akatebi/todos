@@ -86,7 +86,7 @@ func (r *Resolver) Open() {
 		"USE todo",
 		`CREATE TABLE user (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			email VARCHAR(32),
+			email VARCHAR(32) NOT NULL UNIQUE,
 			totalCount INT DEFAULT 0,
 			completedCount INT DEFAULT 0
 		) ENGINE=INNODB`,
@@ -109,7 +109,7 @@ func (r *Resolver) Open() {
 		}
 	}
 
-	emails := []string{"me@gmail.com", "test@test.com"}
+	emails := []string{"me@gmail.com"}
 	for i, email := range emails {
 		stmt, e := db.Prepare("INSERT INTO user(email) VALUES(?)")
 		Panic(e)
@@ -117,8 +117,8 @@ func (r *Resolver) Open() {
 		Panic(e)
 		user_id, e := res.LastInsertId()
 		Panic(e)
+		log.Printf("Insert user_id %v", user_id)
 		if i == 0 {
-			log.Printf("Insert user_id %v", user_id)
 			stmt, e = db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")
 			Panic(e)
 

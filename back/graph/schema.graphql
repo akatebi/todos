@@ -44,12 +44,33 @@ type Todo implements Node {
 }
 
 type Mutation {
+  addUser(input: AddUserInput!): AddUserPayload
+  removeUser(input: RemoveUserInput!): RemoveUserPayload
   addTodo(input: AddTodoInput!): AddTodoPayload
   changeTodoStatus(input: ChangeTodoStatusInput!): ChangeTodoStatusPayload
   clearCompletedTodos(input: ClearCompletedTodosInput!): ClearCompletedTodosPayload
   markAllTodos(input: MarkAllTodosInput!): MarkAllTodosPayload
   removeTodo(input: RemoveTodoInput!): RemoveTodoPayload
   renameTodo(input: RenameTodoInput!): RenameTodoPayload
+}
+
+input AddUserInput {
+  email: String!
+  clientMutationId: String  
+}
+
+type AddUserPayload {
+  id: ID!
+  clientMutationId: String  
+}
+
+input RemoveUserInput {
+  id: String!
+  clientMutationId: String  
+}
+
+type RemoveUserPayload {
+  clientMutationId: String  
 }
 
 input AddTodoInput {

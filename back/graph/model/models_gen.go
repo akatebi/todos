@@ -24,6 +24,16 @@ type AddTodoPayload struct {
 	ClientMutationID *string   `json:"clientMutationId"`
 }
 
+type AddUserInput struct {
+	Email            string  `json:"email"`
+	ClientMutationID *string `json:"clientMutationId"`
+}
+
+type AddUserPayload struct {
+	ID               string  `json:"id"`
+	ClientMutationID *string `json:"clientMutationId"`
+}
+
 type ChangeTodoStatusInput struct {
 	Complete         bool    `json:"complete"`
 	ID               string  `json:"id"`
@@ -76,6 +86,15 @@ type RemoveTodoInput struct {
 type RemoveTodoPayload struct {
 	DeletedTodoID    string  `json:"deletedTodoId"`
 	User             *User   `json:"user"`
+	ClientMutationID *string `json:"clientMutationId"`
+}
+
+type RemoveUserInput struct {
+	ID               string  `json:"id"`
+	ClientMutationID *string `json:"clientMutationId"`
+}
+
+type RemoveUserPayload struct {
 	ClientMutationID *string `json:"clientMutationId"`
 }
 

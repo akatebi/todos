@@ -14,6 +14,37 @@ import (
 	"github.com/graphql-go/relay"
 )
 
+func (r *mutationResolver) AddUser(ctx context.Context, input model.AddUserInput) (*model.AddUserPayload, error) {
+	log.Printf("##### AddUser #####")
+	stmt, e := r.db.Prepare("INSERT INTO user(email) VALUES(?)")
+	Panic(e)
+	res, e := stmt.Exec(input.Email)
+	Panic(e)
+	id, e := res.LastInsertId()
+	Panic(e)
+	log.Printf("Insert User id %v", id)
+	payload := &model.AddUserPayload{
+		ID:               relay.ToGlobalID("User", strconv.FormatInt(id, 10)),
+		ClientMutationID: input.ClientMutationID,
+	}
+	return payload, nil
+}
+
+func (r *mutationResolver) RemoveUser(ctx context.Context, input model.RemoveUserInput) (*model.RemoveUserPayload, error) {
+	log.Printf("##### RemoveUser #####")
+	id := relay.FromGlobalID(input.ID).ID
+	Stmt, err := r.db.Prepare("DELETE FROM user WHERE id=?")
+	res, err := Stmt.Exec(id)
+	Panic(err)
+	rowsAffected, err := res.RowsAffected()
+	Panic(err)
+	log.Printf("Rows Affected %v", rowsAffected)
+	payload := &model.RemoveUserPayload{
+		ClientMutationID: input.ClientMutationID,
+	}
+	return payload, nil
+}
+
 func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error) {
 	log.Printf("##### AddTodo %#v #####", input)
 	stmt, e := r.db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")

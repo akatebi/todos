@@ -51,6 +51,11 @@ type ComplexityRoot struct {
 		User             func(childComplexity int) int
 	}
 
+	AddUserPayload struct {
+		ClientMutationID func(childComplexity int) int
+		ID               func(childComplexity int) int
+	}
+
 	ChangeTodoStatusPayload struct {
 		ClientMutationID func(childComplexity int) int
 		Todo             func(childComplexity int) int
@@ -71,10 +76,12 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		AddTodo             func(childComplexity int, input model.AddTodoInput) int
+		AddUser             func(childComplexity int, input model.AddUserInput) int
 		ChangeTodoStatus    func(childComplexity int, input model.ChangeTodoStatusInput) int
 		ClearCompletedTodos func(childComplexity int, input model.ClearCompletedTodosInput) int
 		MarkAllTodos        func(childComplexity int, input model.MarkAllTodosInput) int
 		RemoveTodo          func(childComplexity int, input model.RemoveTodoInput) int
+		RemoveUser          func(childComplexity int, input model.RemoveUserInput) int
 		RenameTodo          func(childComplexity int, input model.RenameTodoInput) int
 	}
 
@@ -94,6 +101,10 @@ type ComplexityRoot struct {
 		ClientMutationID func(childComplexity int) int
 		DeletedTodoID    func(childComplexity int) int
 		User             func(childComplexity int) int
+	}
+
+	RemoveUserPayload struct {
+		ClientMutationID func(childComplexity int) int
 	}
 
 	RenameTodoPayload struct {
@@ -127,6 +138,8 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
+	AddUser(ctx context.Context, input model.AddUserInput) (*model.AddUserPayload, error)
+	RemoveUser(ctx context.Context, input model.RemoveUserInput) (*model.RemoveUserPayload, error)
 	AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error)
 	ChangeTodoStatus(ctx context.Context, input model.ChangeTodoStatusInput) (*model.ChangeTodoStatusPayload, error)
 	ClearCompletedTodos(ctx context.Context, input model.ClearCompletedTodosInput) (*model.ClearCompletedTodosPayload, error)
@@ -177,6 +190,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AddTodoPayload.User(childComplexity), true
+
+	case "AddUserPayload.clientMutationId":
+		if e.complexity.AddUserPayload.ClientMutationID == nil {
+			break
+		}
+
+		return e.complexity.AddUserPayload.ClientMutationID(childComplexity), true
+
+	case "AddUserPayload.id":
+		if e.complexity.AddUserPayload.ID == nil {
+			break
+		}
+
+		return e.complexity.AddUserPayload.ID(childComplexity), true
 
 	case "ChangeTodoStatusPayload.clientMutationId":
 		if e.complexity.ChangeTodoStatusPayload.ClientMutationID == nil {
@@ -253,6 +280,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AddTodo(childComplexity, args["input"].(model.AddTodoInput)), true
 
+	case "Mutation.addUser":
+		if e.complexity.Mutation.AddUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddUser(childComplexity, args["input"].(model.AddUserInput)), true
+
 	case "Mutation.changeTodoStatus":
 		if e.complexity.Mutation.ChangeTodoStatus == nil {
 			break
@@ -300,6 +339,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RemoveTodo(childComplexity, args["input"].(model.RemoveTodoInput)), true
+
+	case "Mutation.removeUser":
+		if e.complexity.Mutation.RemoveUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveUser(childComplexity, args["input"].(model.RemoveUserInput)), true
 
 	case "Mutation.renameTodo":
 		if e.complexity.Mutation.RenameTodo == nil {
@@ -385,6 +436,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.RemoveTodoPayload.User(childComplexity), true
+
+	case "RemoveUserPayload.clientMutationId":
+		if e.complexity.RemoveUserPayload.ClientMutationID == nil {
+			break
+		}
+
+		return e.complexity.RemoveUserPayload.ClientMutationID(childComplexity), true
 
 	case "RenameTodoPayload.clientMutationId":
 		if e.complexity.RenameTodoPayload.ClientMutationID == nil {
@@ -599,12 +657,33 @@ type Todo implements Node {
 }
 
 type Mutation {
+  addUser(input: AddUserInput!): AddUserPayload
+  removeUser(input: RemoveUserInput!): RemoveUserPayload
   addTodo(input: AddTodoInput!): AddTodoPayload
   changeTodoStatus(input: ChangeTodoStatusInput!): ChangeTodoStatusPayload
   clearCompletedTodos(input: ClearCompletedTodosInput!): ClearCompletedTodosPayload
   markAllTodos(input: MarkAllTodosInput!): MarkAllTodosPayload
   removeTodo(input: RemoveTodoInput!): RemoveTodoPayload
   renameTodo(input: RenameTodoInput!): RenameTodoPayload
+}
+
+input AddUserInput {
+  email: String!
+  clientMutationId: String  
+}
+
+type AddUserPayload {
+  id: ID!
+  clientMutationId: String  
+}
+
+input RemoveUserInput {
+  id: String!
+  clientMutationId: String  
+}
+
+type RemoveUserPayload {
+  clientMutationId: String  
 }
 
 input AddTodoInput {
@@ -705,6 +784,21 @@ func (ec *executionContext) field_Mutation_addTodo_args(ctx context.Context, raw
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_addUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.AddUserInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNAddUserInput2githubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐAddUserInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_changeTodoStatus_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -757,6 +851,21 @@ func (ec *executionContext) field_Mutation_removeTodo_args(ctx context.Context, 
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNRemoveTodoInput2githubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐRemoveTodoInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_removeUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.RemoveUserInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNRemoveUserInput2githubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐRemoveUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -993,6 +1102,73 @@ func (ec *executionContext) _AddTodoPayload_clientMutationId(ctx context.Context
 	}()
 	fc := &graphql.FieldContext{
 		Object:     "AddTodoPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ClientMutationID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AddUserPayload_id(ctx context.Context, field graphql.CollectedField, obj *model.AddUserPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AddUserPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AddUserPayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.AddUserPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AddUserPayload",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -1314,6 +1490,84 @@ func (ec *executionContext) _MarkAllTodosPayload_clientMutationId(ctx context.Co
 	res := resTmp.(*string)
 	fc.Result = res
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addUser_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddUser(rctx, args["input"].(model.AddUserInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.AddUserPayload)
+	fc.Result = res
+	return ec.marshalOAddUserPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐAddUserPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_removeUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_removeUser_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveUser(rctx, args["input"].(model.RemoveUserInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.RemoveUserPayload)
+	fc.Result = res
+	return ec.marshalORemoveUserPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐRemoveUserPayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_addTodo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1912,6 +2166,38 @@ func (ec *executionContext) _RemoveTodoPayload_clientMutationId(ctx context.Cont
 	}()
 	fc := &graphql.FieldContext{
 		Object:     "RemoveTodoPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ClientMutationID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RemoveUserPayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.RemoveUserPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "RemoveUserPayload",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -3543,6 +3829,34 @@ func (ec *executionContext) unmarshalInputAddTodoInput(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputAddUserInput(ctx context.Context, obj interface{}) (model.AddUserInput, error) {
+	var it model.AddUserInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "email":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientMutationId"))
+			it.ClientMutationID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputChangeTodoStatusInput(ctx context.Context, obj interface{}) (model.ChangeTodoStatusInput, error) {
 	var it model.ChangeTodoStatusInput
 	var asMap = obj.(map[string]interface{})
@@ -3687,6 +4001,34 @@ func (ec *executionContext) unmarshalInputRemoveTodoInput(ctx context.Context, o
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputRemoveUserInput(ctx context.Context, obj interface{}) (model.RemoveUserInput, error) {
+	var it model.RemoveUserInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientMutationId"))
+			it.ClientMutationID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputRenameTodoInput(ctx context.Context, obj interface{}) (model.RenameTodoInput, error) {
 	var it model.RenameTodoInput
 	var asMap = obj.(map[string]interface{})
@@ -3777,6 +4119,35 @@ func (ec *executionContext) _AddTodoPayload(ctx context.Context, sel ast.Selecti
 			}
 		case "clientMutationId":
 			out.Values[i] = ec._AddTodoPayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var addUserPayloadImplementors = []string{"AddUserPayload"}
+
+func (ec *executionContext) _AddUserPayload(ctx context.Context, sel ast.SelectionSet, obj *model.AddUserPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, addUserPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AddUserPayload")
+		case "id":
+			out.Values[i] = ec._AddUserPayload_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "clientMutationId":
+			out.Values[i] = ec._AddUserPayload_clientMutationId(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3899,6 +4270,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "addUser":
+			out.Values[i] = ec._Mutation_addUser(ctx, field)
+		case "removeUser":
+			out.Values[i] = ec._Mutation_removeUser(ctx, field)
 		case "addTodo":
 			out.Values[i] = ec._Mutation_addTodo(ctx, field)
 		case "changeTodoStatus":
@@ -4033,6 +4408,30 @@ func (ec *executionContext) _RemoveTodoPayload(ctx context.Context, sel ast.Sele
 			}
 		case "clientMutationId":
 			out.Values[i] = ec._RemoveTodoPayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var removeUserPayloadImplementors = []string{"RemoveUserPayload"}
+
+func (ec *executionContext) _RemoveUserPayload(ctx context.Context, sel ast.SelectionSet, obj *model.RemoveUserPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, removeUserPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RemoveUserPayload")
+		case "clientMutationId":
+			out.Values[i] = ec._RemoveUserPayload_clientMutationId(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4471,6 +4870,11 @@ func (ec *executionContext) unmarshalNAddTodoInput2githubᚗcomᚋakatebiᚋtodo
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNAddUserInput2githubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐAddUserInput(ctx context.Context, v interface{}) (model.AddUserInput, error) {
+	res, err := ec.unmarshalInputAddUserInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4543,6 +4947,11 @@ func (ec *executionContext) marshalNPageInfo2ᚖgithubᚗcomᚋakatebiᚋtodos�
 
 func (ec *executionContext) unmarshalNRemoveTodoInput2githubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐRemoveTodoInput(ctx context.Context, v interface{}) (model.RemoveTodoInput, error) {
 	res, err := ec.unmarshalInputRemoveTodoInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNRemoveUserInput2githubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐRemoveUserInput(ctx context.Context, v interface{}) (model.RemoveUserInput, error) {
+	res, err := ec.unmarshalInputRemoveUserInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -4832,6 +5241,13 @@ func (ec *executionContext) marshalOAddTodoPayload2ᚖgithubᚗcomᚋakatebiᚋt
 	return ec._AddTodoPayload(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOAddUserPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐAddUserPayload(ctx context.Context, sel ast.SelectionSet, v *model.AddUserPayload) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AddUserPayload(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4904,6 +5320,13 @@ func (ec *executionContext) marshalORemoveTodoPayload2ᚖgithubᚗcomᚋakatebi�
 		return graphql.Null
 	}
 	return ec._RemoveTodoPayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalORemoveUserPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐRemoveUserPayload(ctx context.Context, sel ast.SelectionSet, v *model.RemoveUserPayload) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._RemoveUserPayload(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalORenameTodoPayload2ᚖgithubᚗcomᚋakatebiᚋtodosᚋgraphᚋmodelᚐRenameTodoPayload(ctx context.Context, sel ast.SelectionSet, v *model.RenameTodoPayload) graphql.Marshaler {
