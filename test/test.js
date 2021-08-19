@@ -15,6 +15,7 @@ describe("Testing Todo GraphQL", () => {
     const email = "test0@test.com";
     const clientMutationId = "test0-0";
     const resp1 = await RemoveUser({ email, clientMutationId });
+    expect(resp1).toMatchSnapshot();
     const resp2 = await AddUser({ email, clientMutationId });
     // console.log("resp", JSON.stringify(resp, 0, 2));
     expect(resp2).toMatchSnapshot();

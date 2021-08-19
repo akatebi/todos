@@ -12,7 +12,7 @@ const AddUser = ({email, clientMutationId}) => {
 
 const RemoveUser = ({email, clientMutationId}) => {
   const variables = { email, clientMutationId };
-  const query = `mutatation RemoveUser($email: String!, $clientMutationId: String) {
+  const query = `mutation RemoveUser($email: String!, $clientMutationId: String) {
     removeUser(input: { email: $email, clientMutationId: $clientMutationId }) {
       clientMutationId
     }}`;
