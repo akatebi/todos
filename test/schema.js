@@ -196,3 +196,20 @@ const ChangeTodoStatus = ({ complete, id, userId, clientMutationId }) => {
   `;
   return fetch({ query, variables });
 };
+
+export const ChangeTodoStatusTest = (complete) => () => {
+  it("", async () => {
+    const userId = global.userId;
+    for (let i = 0; i < 3; i++) {
+      const id = todoIds[i];
+      const clientMutationId = `ChangeTodoStatus-${i}`;
+      const resp = await ChangeTodoStatus({
+        complete,
+        id,
+        userId,
+        clientMutationId,
+      });
+      expect(resp).toMatchSnapshot();
+    }
+  });
+};
