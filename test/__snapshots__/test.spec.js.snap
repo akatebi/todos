@@ -6,10 +6,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "AddToDo-0",
       "todoEdge": Object {
-        "cursor": "NTI=",
+        "cursor": "NTg=",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo1Mg==",
+          "id": "VG9kbzo1OA==",
           "text": "Get A Customer 1",
         },
       },
@@ -29,10 +29,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "AddToDo-1",
       "todoEdge": Object {
-        "cursor": "NTM=",
+        "cursor": "NTk=",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo1Mw==",
+          "id": "VG9kbzo1OQ==",
           "text": "Get A Customer 2",
         },
       },
@@ -52,10 +52,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "AddToDo-2",
       "todoEdge": Object {
-        "cursor": "NTQ=",
+        "cursor": "NjA=",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzo1NA==",
+          "id": "VG9kbzo2MA==",
           "text": "Get A Customer 3",
         },
       },
@@ -74,7 +74,7 @@ Object {
   "data": Object {
     "addUser": Object {
       "clientMutationId": "user1",
-      "id": "VXNlcjoyNw==",
+      "id": "VXNlcjoyOQ==",
     },
   },
 }
@@ -87,13 +87,13 @@ Object {
       "clientMutationId": "ChangeTodoStatus-0",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzo1Mg==",
+        "id": "VG9kbzo1OA==",
         "text": "Get A Customer 1",
       },
       "user": Object {
         "completedCount": 2,
         "email": "user1@test.com",
-        "id": "VXNlcjoyNw==",
+        "id": "VXNlcjoyOQ==",
         "totalCount": 3,
       },
     },
@@ -108,13 +108,13 @@ Object {
       "clientMutationId": "ChangeTodoStatus-1",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzo1Mw==",
+        "id": "VG9kbzo1OQ==",
         "text": "Get A Customer 2",
       },
       "user": Object {
         "completedCount": 1,
         "email": "user1@test.com",
-        "id": "VXNlcjoyNw==",
+        "id": "VXNlcjoyOQ==",
         "totalCount": 3,
       },
     },
@@ -129,13 +129,13 @@ Object {
       "clientMutationId": "ChangeTodoStatus-2",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzo1NA==",
+        "id": "VG9kbzo2MA==",
         "text": "Get A Customer 3",
       },
       "user": Object {
         "completedCount": 0,
         "email": "user1@test.com",
-        "id": "VXNlcjoyNw==",
+        "id": "VXNlcjoyOQ==",
         "totalCount": 3,
       },
     },
@@ -150,13 +150,13 @@ Object {
       "clientMutationId": "ChangeTodoStatus-0",
       "todo": Object {
         "complete": true,
-        "id": "VG9kbzo1Mg==",
+        "id": "VG9kbzo1OA==",
         "text": "Get A Customer 1",
       },
       "user": Object {
         "completedCount": 1,
         "email": "user1@test.com",
-        "id": "VXNlcjoyNw==",
+        "id": "VXNlcjoyOQ==",
         "totalCount": 3,
       },
     },
@@ -171,13 +171,13 @@ Object {
       "clientMutationId": "ChangeTodoStatus-1",
       "todo": Object {
         "complete": true,
-        "id": "VG9kbzo1Mw==",
+        "id": "VG9kbzo1OQ==",
         "text": "Get A Customer 2",
       },
       "user": Object {
         "completedCount": 2,
         "email": "user1@test.com",
-        "id": "VXNlcjoyNw==",
+        "id": "VXNlcjoyOQ==",
         "totalCount": 3,
       },
     },
@@ -192,13 +192,13 @@ Object {
       "clientMutationId": "ChangeTodoStatus-2",
       "todo": Object {
         "complete": true,
-        "id": "VG9kbzo1NA==",
+        "id": "VG9kbzo2MA==",
         "text": "Get A Customer 3",
       },
       "user": Object {
         "completedCount": 3,
         "email": "user1@test.com",
-        "id": "VXNlcjoyNw==",
+        "id": "VXNlcjoyOQ==",
         "totalCount": 3,
       },
     },
@@ -212,13 +212,13 @@ Object {
     "clearCompletedTodos": Object {
       "clientMutationId": "ClearCompletedTodos",
       "deletedTodoIds": Array [
-        "VG9kbzo1Mg==",
-        "VG9kbzo1Mw==",
-        "VG9kbzo1NA==",
+        "VG9kbzo1OA==",
+        "VG9kbzo1OQ==",
+        "VG9kbzo2MA==",
       ],
       "user": Object {
         "completedCount": 0,
-        "id": "VXNlcjoyNw==",
+        "id": "VXNlcjoyOQ==",
         "totalCount": 0,
       },
     },
@@ -233,24 +233,24 @@ Object {
       "changedTodos": Array [
         Object {
           "complete": true,
-          "id": "VG9kbzo1Mg==",
+          "id": "VG9kbzo1OA==",
           "text": "Get A Customer 1",
         },
         Object {
           "complete": true,
-          "id": "VG9kbzo1Mw==",
+          "id": "VG9kbzo1OQ==",
           "text": "Get A Customer 2",
         },
         Object {
           "complete": true,
-          "id": "VG9kbzo1NA==",
+          "id": "VG9kbzo2MA==",
           "text": "Get A Customer 3",
         },
       ],
       "clientMutationId": "MarkAllTodos",
       "user": Object {
         "completedCount": 3,
-        "id": "VXNlcjoyNw==",
+        "id": "VXNlcjoyOQ==",
         "totalCount": 3,
       },
     },
@@ -264,36 +264,36 @@ Object {
     "user": Object {
       "completedCount": 0,
       "email": "user1@test.com",
-      "id": "VXNlcjoyNw==",
+      "id": "VXNlcjoyOQ==",
       "todos": Object {
         "edges": Array [
           Object {
-            "cursor": "NTI=",
+            "cursor": "NTg=",
             "node": Object {
               "__typename": "Todo",
               "complete": false,
-              "id": "VG9kbzo1Mg==",
+              "id": "VG9kbzo1OA==",
             },
           },
           Object {
-            "cursor": "NTM=",
+            "cursor": "NTk=",
             "node": Object {
               "__typename": "Todo",
               "complete": false,
-              "id": "VG9kbzo1Mw==",
+              "id": "VG9kbzo1OQ==",
             },
           },
           Object {
-            "cursor": "NTQ=",
+            "cursor": "NjA=",
             "node": Object {
               "__typename": "Todo",
               "complete": false,
-              "id": "VG9kbzo1NA==",
+              "id": "VG9kbzo2MA==",
             },
           },
         ],
         "pageInfo": Object {
-          "endCursor": "NTQ=",
+          "endCursor": "NjA=",
           "hasNextPage": true,
         },
       },
