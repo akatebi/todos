@@ -159,6 +159,15 @@ const ClearCompletedTodos = ({ userId, clientMutationId }) => {
   return fetch({ query, variables });
 };
 
+export const ClearCompletedTodosTest = () => () => {
+  it("", async () => {
+    const userId = global.userId;
+    const clientMutationId = "ClearCompletedTodos";
+    const resp = await ClearCompletedTodos({ userId, clientMutationId });
+    expect(resp).toMatchSnapshot();
+  });
+};
+
 const ChangeTodoStatus = ({ complete, id, userId, clientMutationId }) => {
   const variables = { complete, id, userId, clientMutationId };
   const query = `mutation ChangeTodoStatus(
