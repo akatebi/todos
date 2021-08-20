@@ -1,18 +1,21 @@
-import {
-  AddUserTest,
-  RemoveUserTest,
-  AddTodoTest,
-  QueryUserTest,
-  MarkAllTodosTest,
-  ClearCompletedTodosTest,
-  ChangeTodoStatusTest
-} from "./schema";
+import AddUser from "./schema/addUser";
+import RemoveUser from "./schema/removeUser";
+import AddTodo from "./schema/addTodo";
+import RenameTodo from "./schema/renameTodo";
+import RemoveTodo from "./schema/removeTodo";
+import QueryUser from "./schema/queryUser";
+import MarkAllTodos from "./schema/markAllTodos";
+import ClearCompletedTodos from "./schema/clearCompletedTodos";
+import ChangeTodoStatus from "./schema/changeTodoStatus";
 
-describe("Remove User", RemoveUserTest("user1"));
-describe("Add User", AddUserTest("user1"));
-describe("Add Todo", AddTodoTest("Get A Customer"));
-describe("Query User", QueryUserTest("user1"));
-describe("Mark All Todos", MarkAllTodosTest());
-describe("Change Todo Status => false", ChangeTodoStatusTest(false));
-describe("Change Todo Status => true", ChangeTodoStatusTest(true));
-describe("Clear Completed Todos", ClearCompletedTodosTest());
+describe("Remove User", RemoveUser("user1"));
+describe("Add User", AddUser("user1"));
+describe("Add Todo", AddTodo("Get A Customer"));
+describe("Query User", QueryUser("user1"));
+describe("Mark All Todos", MarkAllTodos());
+describe("Change Todo Status => false", ChangeTodoStatus(false));
+describe("Change Todo Status => true", ChangeTodoStatus(true));
+describe("Clear Completed Todos", ClearCompletedTodos());
+describe("Add Todo", AddTodo("Get A Customer"));
+describe("RenameTodo", RenameTodo());
+describe("RemoveTodo", RemoveTodo());
