@@ -1,0 +1,314 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Add Todo  1`] = `
+Object {
+  "data": Object {
+    "addTodo": Object {
+      "clientMutationId": "AddToDo-0",
+      "todoEdge": Object {
+        "cursor": "NTI=",
+        "node": Object {
+          "complete": false,
+          "id": "VG9kbzo1Mg==",
+          "text": "Get A Customer 1",
+        },
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "user1@test.com",
+        "totalCount": 1,
+      },
+    },
+  },
+}
+`;
+
+exports[`Add Todo  2`] = `
+Object {
+  "data": Object {
+    "addTodo": Object {
+      "clientMutationId": "AddToDo-1",
+      "todoEdge": Object {
+        "cursor": "NTM=",
+        "node": Object {
+          "complete": false,
+          "id": "VG9kbzo1Mw==",
+          "text": "Get A Customer 2",
+        },
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "user1@test.com",
+        "totalCount": 2,
+      },
+    },
+  },
+}
+`;
+
+exports[`Add Todo  3`] = `
+Object {
+  "data": Object {
+    "addTodo": Object {
+      "clientMutationId": "AddToDo-2",
+      "todoEdge": Object {
+        "cursor": "NTQ=",
+        "node": Object {
+          "complete": false,
+          "id": "VG9kbzo1NA==",
+          "text": "Get A Customer 3",
+        },
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "user1@test.com",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Add User  1`] = `
+Object {
+  "data": Object {
+    "addUser": Object {
+      "clientMutationId": "user1",
+      "id": "VXNlcjoyNw==",
+    },
+  },
+}
+`;
+
+exports[`Change Todo Status => false  1`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "ChangeTodoStatus-0",
+      "todo": Object {
+        "complete": false,
+        "id": "VG9kbzo1Mg==",
+        "text": "Get A Customer 1",
+      },
+      "user": Object {
+        "completedCount": 2,
+        "email": "user1@test.com",
+        "id": "VXNlcjoyNw==",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Change Todo Status => false  2`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "ChangeTodoStatus-1",
+      "todo": Object {
+        "complete": false,
+        "id": "VG9kbzo1Mw==",
+        "text": "Get A Customer 2",
+      },
+      "user": Object {
+        "completedCount": 1,
+        "email": "user1@test.com",
+        "id": "VXNlcjoyNw==",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Change Todo Status => false  3`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "ChangeTodoStatus-2",
+      "todo": Object {
+        "complete": false,
+        "id": "VG9kbzo1NA==",
+        "text": "Get A Customer 3",
+      },
+      "user": Object {
+        "completedCount": 0,
+        "email": "user1@test.com",
+        "id": "VXNlcjoyNw==",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Change Todo Status => true  1`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "ChangeTodoStatus-0",
+      "todo": Object {
+        "complete": true,
+        "id": "VG9kbzo1Mg==",
+        "text": "Get A Customer 1",
+      },
+      "user": Object {
+        "completedCount": 1,
+        "email": "user1@test.com",
+        "id": "VXNlcjoyNw==",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Change Todo Status => true  2`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "ChangeTodoStatus-1",
+      "todo": Object {
+        "complete": true,
+        "id": "VG9kbzo1Mw==",
+        "text": "Get A Customer 2",
+      },
+      "user": Object {
+        "completedCount": 2,
+        "email": "user1@test.com",
+        "id": "VXNlcjoyNw==",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Change Todo Status => true  3`] = `
+Object {
+  "data": Object {
+    "changeTodoStatus": Object {
+      "clientMutationId": "ChangeTodoStatus-2",
+      "todo": Object {
+        "complete": true,
+        "id": "VG9kbzo1NA==",
+        "text": "Get A Customer 3",
+      },
+      "user": Object {
+        "completedCount": 3,
+        "email": "user1@test.com",
+        "id": "VXNlcjoyNw==",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Clear Completed Todos  1`] = `
+Object {
+  "data": Object {
+    "clearCompletedTodos": Object {
+      "clientMutationId": "ClearCompletedTodos",
+      "deletedTodoIds": Array [
+        "VG9kbzo1Mg==",
+        "VG9kbzo1Mw==",
+        "VG9kbzo1NA==",
+      ],
+      "user": Object {
+        "completedCount": 0,
+        "id": "VXNlcjoyNw==",
+        "totalCount": 0,
+      },
+    },
+  },
+}
+`;
+
+exports[`Mark All Todos  1`] = `
+Object {
+  "data": Object {
+    "markAllTodos": Object {
+      "changedTodos": Array [
+        Object {
+          "complete": true,
+          "id": "VG9kbzo1Mg==",
+          "text": "Get A Customer 1",
+        },
+        Object {
+          "complete": true,
+          "id": "VG9kbzo1Mw==",
+          "text": "Get A Customer 2",
+        },
+        Object {
+          "complete": true,
+          "id": "VG9kbzo1NA==",
+          "text": "Get A Customer 3",
+        },
+      ],
+      "clientMutationId": "MarkAllTodos",
+      "user": Object {
+        "completedCount": 3,
+        "id": "VXNlcjoyNw==",
+        "totalCount": 3,
+      },
+    },
+  },
+}
+`;
+
+exports[`Query User  1`] = `
+Object {
+  "data": Object {
+    "user": Object {
+      "completedCount": 0,
+      "email": "user1@test.com",
+      "id": "VXNlcjoyNw==",
+      "todos": Object {
+        "edges": Array [
+          Object {
+            "cursor": "NTI=",
+            "node": Object {
+              "__typename": "Todo",
+              "complete": false,
+              "id": "VG9kbzo1Mg==",
+            },
+          },
+          Object {
+            "cursor": "NTM=",
+            "node": Object {
+              "__typename": "Todo",
+              "complete": false,
+              "id": "VG9kbzo1Mw==",
+            },
+          },
+          Object {
+            "cursor": "NTQ=",
+            "node": Object {
+              "__typename": "Todo",
+              "complete": false,
+              "id": "VG9kbzo1NA==",
+            },
+          },
+        ],
+        "pageInfo": Object {
+          "endCursor": "NTQ=",
+          "hasNextPage": true,
+        },
+      },
+      "totalCount": 3,
+    },
+  },
+}
+`;
+
+exports[`Remove User  1`] = `
+Object {
+  "data": Object {
+    "removeUser": Object {
+      "clientMutationId": "user1",
+    },
+  },
+}
+`;
