@@ -9,6 +9,7 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/akatebi/todos/graph/generated"
 	"github.com/akatebi/todos/graph/model"
 	"github.com/graphql-go/relay"
@@ -19,6 +20,9 @@ func (r *mutationResolver) AddUser(ctx context.Context, input model.AddUserInput
 	stmt, e := r.db.Prepare("INSERT INTO user(email) VALUES(?)")
 	Panic(e)
 	res, e := stmt.Exec(input.Email)
+	if e != nil {
+		graphql.AddError(ctx, e)
+	}
 	Panic(e)
 	id, e := res.LastInsertId()
 	Panic(e)
