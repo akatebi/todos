@@ -1,7 +1,7 @@
 package model
 
-const UserQuery string = `
-query User($email: String!) {
+const userQuery string = `
+query user($email: String!) {
 	user(email: $email) {
 	  id
 	  email
@@ -25,10 +25,11 @@ query User($email: String!) {
 	}
   `
 
-type Variables struct {
-	Email string `json:"email"`
+type variables struct {
+	email string
 }
-type GraphQL struct {
-	Query     string    `json:"query"`
-	Variables Variables `json:"variables"`
+
+type body struct {
+	query     string
+	variables variables
 }

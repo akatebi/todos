@@ -201,7 +201,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 }
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
-	log.Printf("##### Todos #####")
+	log.Printf("##### Todos Connection #####")
 	user_id := relay.FromGlobalID(obj.ID).ID
 	after_ := DecodeCursor(after)
 	before_ := DecodeCursor(before)
