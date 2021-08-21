@@ -1,4 +1,9 @@
-package model
+package graphql
+
+import (
+	"encoding/json"
+	"fmt"
+)
 
 const query string = `
 query user($email: String!, $status: Status, $first: Int, $after: String, $last: Int, $before: String) {
@@ -26,15 +31,17 @@ query user($email: String!, $status: Status, $first: Int, $after: String, $last:
   `
 
 type UserInput struct {
-	email         string
-	status        string
-	first, last   string
-	before, after string
+	Email  string `json:"email"`
+	Status string `json:"status"`
+	First  string `json:"first"`
+	After  string `json:"first"`
+	Last   string `json:"first"`
+	before string `json:"first"`
 }
 
 type UserParams struct {
-	query string
-	variables UserInput 
+	Query     string `json:"query"`
+	Variables UserInput
 }
 
 type UserOutput struct {
@@ -42,13 +49,18 @@ type UserOutput struct {
 	Error interface{}
 }
 
-func QueryUser(userInput *UserInput) (UserOutput, error) {
-	body := &UserParams{query: query, variables: userInput}}
-	payloadBuf := new(bytes.Buffer)
-	json.NewEncoder(payloadBuf).Encode(body)
-	bodyBytes, err := graphql.Fetch(payloadBuf)
+func UserQuery(userInput *UserInput) (UserOutput, error) {
+	userParams := &UserParams{Query: query, Variables: *userInput}
+	bytes, err := json.Marshal(userParams)
+	if err != nil {
+		panic(err)
+	}
+	resp, err := Fetch(bytes)
+	if err != nil {
+		panic(err)
+	}
 	var userOutput UserOutput
-	json.Unmarshal(bodyBytes, &userOutput)
+	err = json.Unmarshal(resp, &userOutput)
 	fmt.Printf("%#v\n", userOutput)
 	return userOutput, err
 }

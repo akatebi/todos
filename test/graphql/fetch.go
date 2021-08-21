@@ -15,13 +15,7 @@ func Fetch(bytes io.Reader) ([]byte, error) {
 	}
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
-	client := &http.Client{
-		Transport: nil,
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-		},
-		Jar:     nil,
-		Timeout: 0,
-	}
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Print(err.Error())

@@ -1,3 +1,3 @@
-module github.com/akatebi/graphql-test
+module github.com/akatebi/gqltst
 
 go 1.16
