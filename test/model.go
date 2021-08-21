@@ -1,13 +1,13 @@
 package model
 
-const userQuery string = `
-query user($email: String!) {
+const query string = `
+query user($email: String!, $status: Status, $first: Int, $after: String, $last: Int, $before: String) {
 	user(email: $email) {
 	  id
 	  email
 	  completedCount
 	  totalCount
-	  todos(first: 1000) {
+	  todos(status: $status, first: $first, after: $after, last: $last, before: $before) {
 		edges {
 		  cursor
 		  node {
@@ -25,11 +25,30 @@ query user($email: String!) {
 	}
   `
 
-type variables struct {
-	email string
+type UserInput struct {
+	email         string
+	status        string
+	first, last   string
+	before, after string
 }
 
-type body struct {
-	query     string
-	variables variables
+type UserParams struct {
+	query string
+	variables UserInput 
+}
+
+type UserOutput struct {
+	Data  interface{}
+	Error interface{}
+}
+
+func QueryUser(userInput *UserInput) (UserOutput, error) {
+	body := &UserParams{query: query, variables: userInput}}
+	payloadBuf := new(bytes.Buffer)
+	json.NewEncoder(payloadBuf).Encode(body)
+	bodyBytes, err := graphql.Fetch(payloadBuf)
+	var userOutput UserOutput
+	json.Unmarshal(bodyBytes, &userOutput)
+	fmt.Printf("%#v\n", userOutput)
+	return userOutput, err
 }
