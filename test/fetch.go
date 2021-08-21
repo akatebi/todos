@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/akatebi/todos/graph/model"
 )
 
 func main() {
@@ -79,7 +77,7 @@ func main() {
 	// }
 
 	type GraphQLResp struct {
-		Data  struct{ User model.User }
+		Data  interface{}
 		Error interface{}
 	}
 	// var res interface{}
