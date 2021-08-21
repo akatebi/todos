@@ -9,36 +9,8 @@ import (
 )
 
 func main() {
-	query := `query User($email: String!) {
-        user(email: $email) {
-          id
-          email
-          completedCount
-          totalCount
-          todos(first: 100) {
-            edges {
-              cursor
-              node {
-                id
-				text
-                complete
-                __typename
-              }
-            }
-            pageInfo {
-              endCursor
-              hasNextPage
-            }
-          }
-        }
-      }`
-	type Variables struct {
-		Email string `json:"email"`
-	}
-	type GraphQL struct {
-		Query     string    `json:"query"`
-		Variables Variables `json:"variables"`
-	}
+	query := model.UserQuery
+
 	body := &GraphQL{Query: query, Variables: Variables{Email: "me@gmail.com"}}
 	fmt.Println("Calling API...")
 	client := &http.Client{}
