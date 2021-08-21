@@ -1,8 +1,10 @@
 package graphql
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 const query string = `
@@ -50,12 +52,14 @@ type UserOutput struct {
 }
 
 func UserQuery(userInput *UserInput) (UserOutput, error) {
+	// test(userInput)
 	userParams := &UserParams{Query: query, Variables: *userInput}
-	bytes, err := json.Marshal(userParams)
+	data, err := json.Marshal(userParams)
 	if err != nil {
 		panic(err)
 	}
-	resp, err := Fetch(bytes)
+	reader := bytes.NewReader(data)
+	resp, err := Fetch(reader)
 	if err != nil {
 		panic(err)
 	}
@@ -63,4 +67,20 @@ func UserQuery(userInput *UserInput) (UserOutput, error) {
 	err = json.Unmarshal(resp, &userOutput)
 	fmt.Printf("%#v\n", userOutput)
 	return userOutput, err
+}
+
+func test(input *UserInput) {
+	b, err := json.Marshal(input)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("JSON Input: %+v\n", b)
+	os.Stdout.Write(b)
+
+	output := UserInput{}
+	err = json.Unmarshal(b, &output)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("\nJSON Output: %+v\n", output)
 }
