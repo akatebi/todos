@@ -6,13 +6,13 @@ import (
 )
 
 const query string = `
-query user($email: String!, $status: Status, $first: Int, $after: String, $last: Int, $before: String) {
+query user($email: String!, $status: Status, $first: Int, $after:String) {
 	user(email: $email) {
 	  id
 	  email
 	  completedCount
 	  totalCount
-	  todos(status: $status, first: $first, after: $after, last: $last, before: $before) {
+	  todos(first: $first, status:$status, after:$after) {
 		edges {
 		  cursor
 		  node {
@@ -45,7 +45,10 @@ type UserParams struct {
 }
 
 type UserOutput struct {
-	Data  interface{}
+	Data struct {
+		User User `json:"user"`
+	}
+	// Data  interface{}
 	Error interface{}
 }
 
@@ -58,21 +61,5 @@ func UserQuery(userInput *UserInput) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("\nJSON Output: %+v\n", output)
+	fmt.Printf("\noutput: %+v\n", output)
 }
-
-// func test(input *UserInput) {
-// 	b, err := json.Marshal(input)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	fmt.Printf("JSON Input: %+v\n", b)
-// 	os.Stdout.Write(b)
-
-// 	output := UserInput{}
-// 	err = json.Unmarshal(b, &output)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	fmt.Printf("\nJSON Output: %+v\n", output)
-// }

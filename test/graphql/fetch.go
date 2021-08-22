@@ -12,8 +12,6 @@ const URL string = "http://localhost:8080/query"
 
 func Fetch(data interface{}) []byte {
 	client := &http.Client{}
-	// req, err := http.NewRequest("GET", "https://icanhazdadjoke.com/", nil)
-	// body := bytes.NewBuffer([]byte(graphql))
 	URL := "http://localhost:8080/query"
 	payloadBuf := new(bytes.Buffer)
 	json.NewEncoder(payloadBuf).Encode(data)
