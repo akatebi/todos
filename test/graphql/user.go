@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
+	"io/ioutil"
+	"net/http"
 )
 
 const query string = `
@@ -30,15 +31,15 @@ query user($email: String!, $status: Status, $first: Int, $after: String, $last:
 		}
 	  }
 	}
-  `
+}`
 
 type UserInput struct {
 	Email  string `json:"email"`
 	Status string `json:"status"`
-	First  string `json:"first"`
-	After  string `json:"first"`
-	Last   string `json:"first"`
-	before string `json:"first"`
+	First  int    `json:"first"`
+	After  string `json:"after"`
+	Last   int    `json:"last"`
+	Before string `json:"before"`
 }
 
 type UserParams struct {
@@ -51,36 +52,45 @@ type UserOutput struct {
 	Error interface{}
 }
 
-func UserQuery(userInput *UserInput) (UserOutput, error) {
-	// test(userInput)
+func UserQuery(userInput *UserInput) {
+	//
 	userParams := &UserParams{Query: query, Variables: *userInput}
-	data, err := json.Marshal(userParams)
+	client := &http.Client{}
+	// req, err := http.NewRequest("GET", "https://icanhazdadjoke.com/", nil)
+	// body := bytes.NewBuffer([]byte(graphql))
+	URL := "http://localhost:8080/query"
+	payloadBuf := new(bytes.Buffer)
+	json.NewEncoder(payloadBuf).Encode(userParams)
+	req, err := http.NewRequest("POST", URL, payloadBuf)
 	if err != nil {
-		panic(err)
+		fmt.Print(err.Error())
 	}
-	reader := bytes.NewReader(data)
-	resp, err := Fetch(reader)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		fmt.Print(err.Error())
 	}
-	var userOutput UserOutput
-	err = json.Unmarshal(resp, &userOutput)
-	fmt.Printf("%#v\n", userOutput)
-	return userOutput, err
+	defer resp.Body.Close()
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+	fmt.Printf("%v", string(bodyBytes))
 }
 
-func test(input *UserInput) {
-	b, err := json.Marshal(input)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("JSON Input: %+v\n", b)
-	os.Stdout.Write(b)
+// func test(input *UserInput) {
+// 	b, err := json.Marshal(input)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	fmt.Printf("JSON Input: %+v\n", b)
+// 	os.Stdout.Write(b)
 
-	output := UserInput{}
-	err = json.Unmarshal(b, &output)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("\nJSON Output: %+v\n", output)
-}
+// 	output := UserInput{}
+// 	err = json.Unmarshal(b, &output)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	fmt.Printf("\nJSON Output: %+v\n", output)
+// }

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/akatebi/gqltst/graphql"
 )
 
@@ -12,10 +10,6 @@ type Message struct {
 }
 
 func main() {
-	userInput := &graphql.UserInput{Email: "me@gmail.com"}
-	userOutput, err := graphql.UserQuery(userInput)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("userOutput %v", userOutput)
+	userInput := &graphql.UserInput{Email: "me@gmail.com", Status: "ANY", First: 100}
+	graphql.UserQuery(userInput)
 }

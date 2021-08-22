@@ -1,25 +1,19 @@
 package graphql
 
 import (
-	"io"
-	"io/ioutil"
+	"bytes"
+	"encoding/json"
 	"net/http"
 )
 
-func Fetch(reader io.Reader) ([]byte, error) {
-	URL := "http://localhost:8080/query"
-	req, err := http.NewRequest("POST", URL, reader)
+const URL string = "http://localhost:8080/query"
+
+func Fetch(data interface{}) (*http.Response, error) {
+	b := new(bytes.Buffer)
+	json.NewEncoder(b).Encode(data)
+	resp, err := http.Post(URL, "application/json; charset=utf-8", b)
 	if err != nil {
 		panic(err)
 	}
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	return bodyBytes, err
+	return resp, nil
 }
