@@ -1,11 +1,8 @@
 package graphql
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 )
 
 const query string = `
@@ -55,28 +52,13 @@ type UserOutput struct {
 func UserQuery(userInput *UserInput) {
 	//
 	userParams := &UserParams{Query: query, Variables: *userInput}
-	client := &http.Client{}
-	// req, err := http.NewRequest("GET", "https://icanhazdadjoke.com/", nil)
-	// body := bytes.NewBuffer([]byte(graphql))
-	URL := "http://localhost:8080/query"
-	payloadBuf := new(bytes.Buffer)
-	json.NewEncoder(payloadBuf).Encode(userParams)
-	req, err := http.NewRequest("POST", URL, payloadBuf)
+	resp := Fetch(userParams)
+	output := UserOutput{}
+	err := json.Unmarshal(resp, &output)
 	if err != nil {
-		fmt.Print(err.Error())
+		panic(err)
 	}
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Print(err.Error())
-	}
-	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Print(err.Error())
-	}
-	fmt.Printf("%v", string(bodyBytes))
+	fmt.Printf("\nJSON Output: %+v\n", output)
 }
 
 // func test(input *UserInput) {

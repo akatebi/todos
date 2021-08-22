@@ -3,17 +3,34 @@ package graphql
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
 const URL string = "http://localhost:8080/query"
 
-func Fetch(data interface{}) (*http.Response, error) {
-	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(data)
-	resp, err := http.Post(URL, "application/json; charset=utf-8", b)
+func Fetch(data interface{}) []byte {
+	client := &http.Client{}
+	// req, err := http.NewRequest("GET", "https://icanhazdadjoke.com/", nil)
+	// body := bytes.NewBuffer([]byte(graphql))
+	URL := "http://localhost:8080/query"
+	payloadBuf := new(bytes.Buffer)
+	json.NewEncoder(payloadBuf).Encode(data)
+	req, err := http.NewRequest("POST", URL, payloadBuf)
 	if err != nil {
-		panic(err)
+		fmt.Print(err.Error())
 	}
-	return resp, nil
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+	defer resp.Body.Close()
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+	return bodyBytes
 }
