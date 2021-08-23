@@ -52,14 +52,16 @@ type UserOutput struct {
 	Error interface{}
 }
 
-func UserQuery(userInput *UserInput) {
+func UserQuery(userInput *UserInput) (User, error) {
 	//
 	userParams := &UserParams{Query: query, Variables: *userInput}
 	resp := Fetch(userParams)
+	fmt.Printf("\nresp: %+v\n", string(resp))
 	output := UserOutput{}
 	err := json.Unmarshal(resp, &output)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("\noutput: %+v\n", output)
+	return output.Data.User, nil
 }
