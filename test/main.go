@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/akatebi/gqltst/graphql"
+	"github.com/akatebi/gqltst/graph"
 )
 
 type Message struct {
@@ -12,10 +12,10 @@ type Message struct {
 }
 
 func main() {
-	userInput := &graphql.UserInput{Email: "me@gmail.com", Status: "ANY", First: 100}
-	user, err := graphql.UserQuery(userInput)
+	userInput := &graph.UserInput{Email: "me@gmail.com", Status: "ANY", First: 100}
+	resp, err := graph.UserQuery(userInput)
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("UserId %v", user.ID)
+	log.Printf("### %+v", resp)
 }

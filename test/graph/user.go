@@ -1,8 +1,10 @@
-package graphql
+package graph
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
+
+	"github.com/akatebi/gqltst/graph/model"
 )
 
 const query string = `
@@ -33,10 +35,10 @@ query user($email: String!, $status: Status, $first: Int, $after:String) {
 type UserInput struct {
 	Email  string `json:"email"`
 	Status string `json:"status"`
-	First  int    `json:"first"`
 	After  string `json:"after"`
-	Last   int    `json:"last"`
 	Before string `json:"before"`
+	First  int    `json:"first"`
+	Last   int    `json:"last"`
 }
 
 type UserParams struct {
@@ -44,24 +46,26 @@ type UserParams struct {
 	Variables UserInput
 }
 
-type UserOutput struct {
+type UserResponse struct {
 	Data struct {
-		User User `json:"user"`
+		User model.User `json:"user"`
 	}
 	// Data  interface{}
 	Error interface{}
 }
 
-func UserQuery(userInput *UserInput) (User, error) {
+func UserQuery(userInput *UserInput) (*UserResponse, error) {
 	//
 	userParams := &UserParams{Query: query, Variables: *userInput}
-	resp := Fetch(userParams)
-	fmt.Printf("\nresp: %+v\n", string(resp))
-	output := UserOutput{}
-	err := json.Unmarshal(resp, &output)
+	resp, err := Fetch(userParams)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	fmt.Printf("\noutput: %+v\n", output)
-	return output.Data.User, nil
+	log.Printf("resp: %+v\n\n", string(resp))
+	userResponse := &UserResponse{}
+	err = json.Unmarshal(resp, userResponse)
+	if err != nil {
+		return nil, err
+	}
+	return userResponse, nil
 }
