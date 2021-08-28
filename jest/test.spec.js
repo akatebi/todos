@@ -14,28 +14,34 @@ describe("Todos GraphQL", () => {
         clientMutationId = "1";
         email = "user@test.com";
         resp = await removeUser({ email, clientMutationId });
+        expect("removeUser").toMatchSnapshot();
         expect(resp).toMatchSnapshot();
         
         clientMutationId = "2";
         resp = await addUser({ email, clientMutationId });
+        expect("addUser").toMatchSnapshot();
         expect(resp).toMatchSnapshot();
         const userId = resp.data.addUser.id;
 
         const todoIds = [];
+        clientMutationId = "3";
         for (let i = 0; i < 3; i++) {
             const text = `Get A Customer ${i + 1}`;
-            const clientMutationId = "3";
-            resp = await addTodo({ text, userId, clientMutationId });
+            const cid = `${clientMutationId} ${i}`;
+            resp = await addTodo({ text, userId, clientMutationId: cid });
+            expect(`addTodo ${i+1}`).toMatchSnapshot();
             expect(resp).toMatchSnapshot();
             todoIds.push(resp.data.addTodo.todoEdge.node.id);
         }
         
         resp = await queryUser({ email });
+        expect("queryUser").toMatchSnapshot();
         expect(resp).toMatchSnapshot();
 
         clientMutationId = "4";
         let complete = true;
         resp = await markAllTodos({ complete, userId, clientMutationId });
+        expect("markAllTodos").toMatchSnapshot();
         expect(resp).toMatchSnapshot();
         
         complete = false;
@@ -44,7 +50,9 @@ describe("Todos GraphQL", () => {
             const id = todoIds[i];
             const cid = `${clientMutationId} ${i}`;
             const resp = await changeTodoStatus({
-                complete, id, userId, clientMutationId: cid});
+                complete, id, userId, clientMutationId: cid
+            });
+            expect(`changeTodoStatus ${i}`).toMatchSnapshot();
             expect(resp).toMatchSnapshot();
         }
         
