@@ -13,6 +13,6 @@
     "prettier": "^2.3.2"
   },
   "scripts": {
-    "test": "jest --runInBand"
+    "test": "jest --watch"
   }
 }

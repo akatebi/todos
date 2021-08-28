@@ -1,21 +1,87 @@
-import AddUser from "./schema/addUser";
-import RemoveUser from "./schema/removeUser";
-import AddTodo from "./schema/addTodo";
-import RenameTodo from "./schema/renameTodo";
-import RemoveTodo from "./schema/removeTodo";
-import QueryUser from "./schema/queryUser";
-import MarkAllTodos from "./schema/markAllTodos";
-import ClearCompletedTodos from "./schema/clearCompletedTodos";
-import ChangeTodoStatus from "./schema/changeTodoStatus";
+import { removeUser } from "./schema/removeUser";
+import { addUser } from "./schema/addUser";
+import { addTodo } from "./schema/addTodo";
+import { renameTodo } from "./schema/renameTodo";
+import { removeTodo } from "./schema/removeTodo";
+import { queryUser } from "./schema/queryUser";
+import { markAllTodos } from "./schema/markAllTodos";
+import { clearCompletedTodos } from "./schema/clearCompletedTodos";
+import { changeTodoStatus } from "./schema/changeTodoStatus";
 
-describe("Remove User", RemoveUser("user1"));
-describe("Add User", AddUser("user1"));
-describe("Add Todo", AddTodo("Get A Customer"));
-describe("Query User", QueryUser("user1"));
-describe("Mark All Todos", MarkAllTodos());
-describe("Change Todo Status => false", ChangeTodoStatus(false));
-describe("Change Todo Status => true", ChangeTodoStatus(true));
-describe("Clear Completed Todos", ClearCompletedTodos());
-describe("Add Todo", AddTodo("Get A Customer"));
-describe("RenameTodo", RenameTodo());
-describe("RemoveTodo", RemoveTodo());
+describe("Todos GraphQL", () => {
+    test("Query & Mutation", async() => {
+        let clientMutationId, email, resp;
+        clientMutationId = "1";
+        email = "user@test.com";
+        resp = await removeUser({ email, clientMutationId });
+        expect(resp).toMatchSnapshot();
+        
+        clientMutationId = "2";
+        resp = await addUser({ email, clientMutationId });
+        expect(resp).toMatchSnapshot();
+        const userId = resp.data.addUser.id;
+
+        const todoIds = [];
+        for (let i = 0; i < 3; i++) {
+            const text = `Get A Customer ${i + 1}`;
+            const clientMutationId = "3";
+            resp = await addTodo({ text, userId, clientMutationId });
+            expect(resp).toMatchSnapshot();
+            todoIds.push(resp.data.addTodo.todoEdge.node.id);
+        }
+        
+        resp = await queryUser({ email });
+        expect(resp).toMatchSnapshot();
+
+        clientMutationId = "4";
+        let complete = true;
+        resp = await markAllTodos({ complete, userId, clientMutationId });
+        expect(resp).toMatchSnapshot();
+        
+        complete = false;
+        clientMutationId = "5";
+        for (let i = 0; i < 3; i++) {
+            const id = todoIds[i];
+            const cid = `${clientMutationId} ${i}`;
+            const resp = await changeTodoStatus({
+                complete, id, userId, clientMutationId: cid});
+            expect(resp).toMatchSnapshot();
+        }
+        
+        complete = true;
+        clientMutationId = "6";
+        for (let i = 0; i < 3; i++) {
+            const id = todoIds[i];
+            const cid = `${clientMutationId} ${i}`;
+            const resp = await changeTodoStatus({ complete, id, userId, clientMutationId: cid });
+            expect(resp).toMatchSnapshot();
+        }
+
+        clientMutationId = "7";
+        resp = await clearCompletedTodos({ userId, clientMutationId });
+        expect(resp).toMatchSnapshot();
+
+        clientMutationId = "8";
+        const text = "Get A Job"
+        await addTodo({ text, userId, clientMutationId })
+        
+        clientMutationId = "9";
+        for (let i = 0; i < 3; i++) {
+            const id = todoIds[i];
+            const text = `renamed ${i}`;
+            const cid = `${clientMutationId} ${i}`;
+            const resp = await renameTodo({ id, text, clientMutationId: cid });
+            expect(resp).toMatchSnapshot();
+        }
+        
+
+        clientMutationId = "10";
+        for (let i = 0; i < 3; i++) {
+            const id = todoIds[i];
+            const cid = `${clientMutationId}-${i}`;
+            const resp = await removeTodo({ id, clientMutationId: cid });
+            expect(resp).toMatchSnapshot();
+        }
+        
+    });
+});

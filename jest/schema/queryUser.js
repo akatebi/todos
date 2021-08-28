@@ -1,6 +1,6 @@
 const { fetch } = require("../fetch");
 
-const queryUser = ({ email, first = 100 }) => {
+export const queryUser = ({ email, first = 100 }) => {
   const variables = { email };
   const query = `query User($email: String!, $status: String, $first: Int, $last: String) {
         user(email: $email) {
@@ -27,12 +27,3 @@ const queryUser = ({ email, first = 100 }) => {
   return fetch({ query, variables });
 };
 
-const QueryUserTest = (user) => () => {
-    it("", async () => {
-      const email = `${user}@test.com`;
-      const resp = await queryUser({ email });
-      expect(resp).toMatchSnapshot();
-    });
-  };
-
-export default QueryUserTest;
