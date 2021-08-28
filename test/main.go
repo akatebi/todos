@@ -11,7 +11,7 @@ type Message struct {
 	Last  string `json:"last"`
 }
 
-func main() {
+func main2() {
 	userInput := &graph.UserInput{Email: "me@gmail.com", Status: "ANY", First: 100}
 	resp, err := graph.UserQuery(userInput)
 	if err != nil {
