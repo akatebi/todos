@@ -20,7 +20,6 @@ describe("Todos GraphQL", () => {
         
         clientMutationId = "2";
         resp = await addUser({ email, clientMutationId });
-        expect("addUser").toMatchSnapshot();
         expect(resp).toMatchSnapshot();
         const userId = resp.data.addUser.id;
 
@@ -30,20 +29,17 @@ describe("Todos GraphQL", () => {
             const text = `Get A Customer ${i + 1}`;
             const cid = `${clientMutationId}.${i}`;
             resp = await addTodo({ text, userId, clientMutationId: cid });
-            expect(`addTodo ${i+1}`).toMatchSnapshot();
             expect(resp.data.addTodo.user.totalCount).toBe(i+1)
             expect(resp).toMatchSnapshot();
             todoIds.push(resp.data.addTodo.todoEdge.node.id);
         }
         
         resp = await queryUser({ email });
-        expect("queryUser").toMatchSnapshot();
         expect(resp).toMatchSnapshot();
 
         clientMutationId = "4";
         let complete = true;
         resp = await markAllTodos({ complete, userId, clientMutationId });
-        expect(`markAllTodos ${complete}`).toMatchSnapshot();
         expect(resp.data.markAllTodos.user.totalCount).toBe(count)
         expect(resp.data.markAllTodos.user.completedCount).toBe(count)
         expect(resp).toMatchSnapshot();
@@ -56,7 +52,6 @@ describe("Todos GraphQL", () => {
             const resp = await changeTodoStatus({
                 complete, id, userId, clientMutationId: cid
             });
-            expect(`changeTodoStatus ${i+1} ${complete}`).toMatchSnapshot();
             expect(resp.data.changeTodoStatus.user.completedCount).toBe(count-(i+1))
             expect(resp).toMatchSnapshot();
         }
@@ -67,13 +62,11 @@ describe("Todos GraphQL", () => {
             const id = todoIds[i];
             const cid = `${clientMutationId}.${i}`;
             const resp = await changeTodoStatus({ complete, id, userId, clientMutationId: cid });
-            expect(`changeTodoStatus ${i+1} ${complete}`).toMatchSnapshot();
             expect(resp.data.changeTodoStatus.user.completedCount).toBe(i+1)
             expect(resp).toMatchSnapshot();
         }
 
         clientMutationId = "7";
-        expect("clearCompletedTodos").toMatchSnapshot();
         resp = await clearCompletedTodos({ userId, clientMutationId });
         expect(resp.data.clearCompletedTodos.user.completedCount).toBe(0)
         expect(resp).toMatchSnapshot();
@@ -88,7 +81,6 @@ describe("Todos GraphQL", () => {
             const text = `renamed ${i}`;
             const cid = `${clientMutationId}.${i}`;
             const resp = await renameTodo({ id, text, clientMutationId: cid });
-            expect(`renameTodo ${i+1}`).toMatchSnapshot();
             expect(resp).toMatchSnapshot();
         }
         
@@ -98,12 +90,10 @@ describe("Todos GraphQL", () => {
             const id = todoIds[i];
             const cid = `${clientMutationId}.${i}`;
             const resp = await removeTodo({ id, userId, clientMutationId: cid });
-            expect(`removeTodo ${i+1}`).toMatchSnapshot();
             expect(resp).toMatchSnapshot();
         }
 
         resp = await queryUser({ email });
-        expect("queryUser").toMatchSnapshot();
         expect(resp).toMatchSnapshot();
         
     });
