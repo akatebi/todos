@@ -1,10 +1,10 @@
 const { fetch } = require("../fetch");
 
-export const removeTodo = ({ id, clientMutationId }) => {
-  const variables = { id, clientMutationId };
-  const query = `mutation removeTodo($id: ID!, $clientMutationId: String) {
+export const removeTodo = ({ id, userId, clientMutationId }) => {
+  const variables = { id, userId, clientMutationId };
+  const query = `mutation removeTodo($id: ID!, $userId: ID!, $clientMutationId: String) {
         removeTodo(
-          input: { id: $id, clientMutationId: $clientMutationId }
+          input: { id: $id, userId: $userId, clientMutationId: $clientMutationId }
         ) {
           user {
             id

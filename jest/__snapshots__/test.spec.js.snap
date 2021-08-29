@@ -19,7 +19,7 @@ Object {
   "data": Object {
     "addUser": Object {
       "clientMutationId": "2",
-      "id": "VXNlcjozMQ==",
+      "id": "VXNlcjo2Nw==",
     },
   },
 }
@@ -31,12 +31,12 @@ exports[`Todos GraphQL Query & Mutation 6`] = `
 Object {
   "data": Object {
     "addTodo": Object {
-      "clientMutationId": "3 0",
+      "clientMutationId": "3.0",
       "todoEdge": Object {
-        "cursor": "MTA0",
+        "cursor": "MTg4",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzoxMDQ=",
+          "id": "VG9kbzoxODg=",
           "text": "Get A Customer 1",
         },
       },
@@ -50,65 +50,15 @@ Object {
 }
 `;
 
-exports[`Todos GraphQL Query & Mutation 7`] = `"addTodo 2"`;
+exports[`Todos GraphQL Query & Mutation 7`] = `"queryUser"`;
 
 exports[`Todos GraphQL Query & Mutation 8`] = `
-Object {
-  "data": Object {
-    "addTodo": Object {
-      "clientMutationId": "3 1",
-      "todoEdge": Object {
-        "cursor": "MTA1",
-        "node": Object {
-          "complete": false,
-          "id": "VG9kbzoxMDU=",
-          "text": "Get A Customer 2",
-        },
-      },
-      "user": Object {
-        "completedCount": 0,
-        "email": "user@test.com",
-        "totalCount": 2,
-      },
-    },
-  },
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 9`] = `"addTodo 3"`;
-
-exports[`Todos GraphQL Query & Mutation 10`] = `
-Object {
-  "data": Object {
-    "addTodo": Object {
-      "clientMutationId": "3 2",
-      "todoEdge": Object {
-        "cursor": "MTA2",
-        "node": Object {
-          "complete": false,
-          "id": "VG9kbzoxMDY=",
-          "text": "Get A Customer 3",
-        },
-      },
-      "user": Object {
-        "completedCount": 0,
-        "email": "user@test.com",
-        "totalCount": 3,
-      },
-    },
-  },
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 11`] = `"queryUser"`;
-
-exports[`Todos GraphQL Query & Mutation 12`] = `
 Object {
   "data": Object {
     "user": Object {
       "completedCount": 0,
       "email": "user@test.com",
-      "id": "VXNlcjozMQ==",
+      "id": "VXNlcjo2Nw==",
       "todos": Object {
         "edges": null,
         "pageInfo": Object {
@@ -116,199 +66,95 @@ Object {
           "hasNextPage": true,
         },
       },
-      "totalCount": 3,
+      "totalCount": 1,
     },
   },
 }
 `;
 
-exports[`Todos GraphQL Query & Mutation 13`] = `"markAllTodos"`;
+exports[`Todos GraphQL Query & Mutation 9`] = `"markAllTodos true"`;
 
-exports[`Todos GraphQL Query & Mutation 14`] = `
+exports[`Todos GraphQL Query & Mutation 10`] = `
 Object {
   "data": Object {
     "markAllTodos": Object {
       "changedTodos": Array [
         Object {
           "complete": true,
-          "id": "VG9kbzoxMDQ=",
+          "id": "VG9kbzoxODg=",
           "text": "Get A Customer 1",
-        },
-        Object {
-          "complete": true,
-          "id": "VG9kbzoxMDU=",
-          "text": "Get A Customer 2",
-        },
-        Object {
-          "complete": true,
-          "id": "VG9kbzoxMDY=",
-          "text": "Get A Customer 3",
         },
       ],
       "clientMutationId": "4",
       "user": Object {
-        "completedCount": 3,
-        "id": "VXNlcjozMQ==",
-        "totalCount": 3,
-      },
-    },
-  },
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 15`] = `"changeTodoStatus 1 false"`;
-
-exports[`Todos GraphQL Query & Mutation 16`] = `
-Object {
-  "data": Object {
-    "changeTodoStatus": Object {
-      "clientMutationId": "5 0",
-      "todo": Object {
-        "complete": false,
-        "id": "VG9kbzoxMDQ=",
-        "text": "Get A Customer 1",
-      },
-      "user": Object {
-        "completedCount": 2,
-        "email": "user@test.com",
-        "id": "VXNlcjozMQ==",
-        "totalCount": 3,
-      },
-    },
-  },
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 17`] = `"changeTodoStatus 2 false"`;
-
-exports[`Todos GraphQL Query & Mutation 18`] = `
-Object {
-  "data": Object {
-    "changeTodoStatus": Object {
-      "clientMutationId": "5 1",
-      "todo": Object {
-        "complete": false,
-        "id": "VG9kbzoxMDU=",
-        "text": "Get A Customer 2",
-      },
-      "user": Object {
         "completedCount": 1,
-        "email": "user@test.com",
-        "id": "VXNlcjozMQ==",
-        "totalCount": 3,
+        "id": "VXNlcjo2Nw==",
+        "totalCount": 1,
       },
     },
   },
 }
 `;
 
-exports[`Todos GraphQL Query & Mutation 19`] = `"changeTodoStatus 3 false"`;
+exports[`Todos GraphQL Query & Mutation 11`] = `"changeTodoStatus 1 false"`;
 
-exports[`Todos GraphQL Query & Mutation 20`] = `
+exports[`Todos GraphQL Query & Mutation 12`] = `
 Object {
   "data": Object {
     "changeTodoStatus": Object {
-      "clientMutationId": "5 2",
+      "clientMutationId": "5.0",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzoxMDY=",
-        "text": "Get A Customer 3",
+        "id": "VG9kbzoxODE=",
+        "text": "Get A Customer 1",
       },
       "user": Object {
         "completedCount": 0,
         "email": "user@test.com",
-        "id": "VXNlcjozMQ==",
-        "totalCount": 3,
+        "id": "VXNlcjo2Mg==",
+        "totalCount": 1,
       },
     },
   },
 }
 `;
 
-exports[`Todos GraphQL Query & Mutation 21`] = `"changeTodoStatus 1 true"`;
+exports[`Todos GraphQL Query & Mutation 13`] = `"changeTodoStatus 1 true"`;
 
-exports[`Todos GraphQL Query & Mutation 22`] = `
+exports[`Todos GraphQL Query & Mutation 14`] = `
 Object {
   "data": Object {
     "changeTodoStatus": Object {
-      "clientMutationId": "6 0",
+      "clientMutationId": "6.0",
       "todo": Object {
         "complete": true,
-        "id": "VG9kbzoxMDQ=",
+        "id": "VG9kbzoxODE=",
         "text": "Get A Customer 1",
       },
       "user": Object {
         "completedCount": 1,
         "email": "user@test.com",
-        "id": "VXNlcjozMQ==",
-        "totalCount": 3,
+        "id": "VXNlcjo2Mg==",
+        "totalCount": 1,
       },
     },
   },
 }
 `;
 
-exports[`Todos GraphQL Query & Mutation 23`] = `"changeTodoStatus 2 true"`;
+exports[`Todos GraphQL Query & Mutation 15`] = `"clearCompletedTodos"`;
 
-exports[`Todos GraphQL Query & Mutation 24`] = `
-Object {
-  "data": Object {
-    "changeTodoStatus": Object {
-      "clientMutationId": "6 1",
-      "todo": Object {
-        "complete": true,
-        "id": "VG9kbzoxMDU=",
-        "text": "Get A Customer 2",
-      },
-      "user": Object {
-        "completedCount": 2,
-        "email": "user@test.com",
-        "id": "VXNlcjozMQ==",
-        "totalCount": 3,
-      },
-    },
-  },
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 25`] = `"changeTodoStatus 3 true"`;
-
-exports[`Todos GraphQL Query & Mutation 26`] = `
-Object {
-  "data": Object {
-    "changeTodoStatus": Object {
-      "clientMutationId": "6 2",
-      "todo": Object {
-        "complete": true,
-        "id": "VG9kbzoxMDY=",
-        "text": "Get A Customer 3",
-      },
-      "user": Object {
-        "completedCount": 3,
-        "email": "user@test.com",
-        "id": "VXNlcjozMQ==",
-        "totalCount": 3,
-      },
-    },
-  },
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 27`] = `"clearCompletedTodos"`;
-
-exports[`Todos GraphQL Query & Mutation 28`] = `
+exports[`Todos GraphQL Query & Mutation 16`] = `
 Object {
   "data": Object {
     "clearCompletedTodos": Object {
       "clientMutationId": "7",
       "deletedTodoIds": Array [
-        "VG9kbzoxMDQ=",
-        "VG9kbzoxMDU=",
-        "VG9kbzoxMDY=",
+        "VG9kbzoxODE=",
       ],
       "user": Object {
         "completedCount": 0,
-        "id": "VXNlcjozMQ==",
+        "id": "VXNlcjo2Mg==",
         "totalCount": 0,
       },
     },
@@ -316,16 +162,16 @@ Object {
 }
 `;
 
-exports[`Todos GraphQL Query & Mutation 29`] = `"renameTodo 1"`;
+exports[`Todos GraphQL Query & Mutation 17`] = `"renameTodo 1"`;
 
-exports[`Todos GraphQL Query & Mutation 30`] = `
+exports[`Todos GraphQL Query & Mutation 18`] = `
 Object {
   "data": Object {
     "renameTodo": Object {
-      "clientMutationId": "9 0",
+      "clientMutationId": "9.0",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzoxMDQ=",
+        "id": "VG9kbzoxODE=",
         "text": "",
       },
     },
@@ -333,102 +179,42 @@ Object {
 }
 `;
 
-exports[`Todos GraphQL Query & Mutation 31`] = `"renameTodo 2"`;
+exports[`Todos GraphQL Query & Mutation 19`] = `"removeTodo 1"`;
 
-exports[`Todos GraphQL Query & Mutation 32`] = `
+exports[`Todos GraphQL Query & Mutation 20`] = `
 Object {
   "data": Object {
-    "renameTodo": Object {
-      "clientMutationId": "9 1",
-      "todo": Object {
-        "complete": false,
-        "id": "VG9kbzoxMDU=",
-        "text": "",
+    "removeTodo": Object {
+      "clientMutationId": "10.0",
+      "user": Object {
+        "completedCount": 0,
+        "email": "user@test.com",
+        "id": "VXNlcjo2Mg==",
+        "totalCount": 1,
       },
     },
   },
 }
 `;
 
-exports[`Todos GraphQL Query & Mutation 33`] = `"renameTodo 3"`;
+exports[`Todos GraphQL Query & Mutation 21`] = `"queryUser"`;
 
-exports[`Todos GraphQL Query & Mutation 34`] = `
+exports[`Todos GraphQL Query & Mutation 22`] = `
 Object {
   "data": Object {
-    "renameTodo": Object {
-      "clientMutationId": "9 2",
-      "todo": Object {
-        "complete": false,
-        "id": "VG9kbzoxMDY=",
-        "text": "",
+    "user": Object {
+      "completedCount": 0,
+      "email": "user@test.com",
+      "id": "VXNlcjo2Mg==",
+      "todos": Object {
+        "edges": null,
+        "pageInfo": Object {
+          "endCursor": null,
+          "hasNextPage": true,
+        },
       },
+      "totalCount": 1,
     },
   },
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 35`] = `"removeTodo 1"`;
-
-exports[`Todos GraphQL Query & Mutation 36`] = `
-Object {
-  "data": null,
-  "errors": Array [
-    Object {
-      "extensions": Object {
-        "code": "GRAPHQL_VALIDATION_FAILED",
-      },
-      "locations": Array [
-        Object {
-          "column": 18,
-          "line": 3,
-        },
-      ],
-      "message": "Field RemoveTodoInput.userId of required type ID! was not provided.",
-    },
-  ],
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 37`] = `"removeTodo 2"`;
-
-exports[`Todos GraphQL Query & Mutation 38`] = `
-Object {
-  "data": null,
-  "errors": Array [
-    Object {
-      "extensions": Object {
-        "code": "GRAPHQL_VALIDATION_FAILED",
-      },
-      "locations": Array [
-        Object {
-          "column": 18,
-          "line": 3,
-        },
-      ],
-      "message": "Field RemoveTodoInput.userId of required type ID! was not provided.",
-    },
-  ],
-}
-`;
-
-exports[`Todos GraphQL Query & Mutation 39`] = `"removeTodo 3"`;
-
-exports[`Todos GraphQL Query & Mutation 40`] = `
-Object {
-  "data": null,
-  "errors": Array [
-    Object {
-      "extensions": Object {
-        "code": "GRAPHQL_VALIDATION_FAILED",
-      },
-      "locations": Array [
-        Object {
-          "column": 18,
-          "line": 3,
-        },
-      ],
-      "message": "Field RemoveTodoInput.userId of required type ID! was not provided.",
-    },
-  ],
 }
 `;
