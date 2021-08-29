@@ -57,7 +57,7 @@ describe("Todos GraphQL", () => {
                 complete, id, userId, clientMutationId: cid
             });
             expect(`changeTodoStatus ${i+1} ${complete}`).toMatchSnapshot();
-            expect(resp.data.changeTodoStatus.user.completedCount).toBe(count-i+1)
+            expect(resp.data.changeTodoStatus.user.completedCount).toBe(count-(i+1))
             expect(resp).toMatchSnapshot();
         }
         
@@ -75,6 +75,7 @@ describe("Todos GraphQL", () => {
         clientMutationId = "7";
         expect("clearCompletedTodos").toMatchSnapshot();
         resp = await clearCompletedTodos({ userId, clientMutationId });
+        expect(resp.data.clearCompletedTodos.user.completedCount).toBe(0)
         expect(resp).toMatchSnapshot();
 
         clientMutationId = "8";

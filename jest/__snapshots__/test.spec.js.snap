@@ -19,7 +19,7 @@ Object {
   "data": Object {
     "addUser": Object {
       "clientMutationId": "2",
-      "id": "VXNlcjo2Nw==",
+      "id": "VXNlcjo3Ng==",
     },
   },
 }
@@ -33,10 +33,10 @@ Object {
     "addTodo": Object {
       "clientMutationId": "3.0",
       "todoEdge": Object {
-        "cursor": "MTg4",
+        "cursor": "MTk4",
         "node": Object {
           "complete": false,
-          "id": "VG9kbzoxODg=",
+          "id": "VG9kbzoxOTg=",
           "text": "Get A Customer 1",
         },
       },
@@ -58,7 +58,7 @@ Object {
     "user": Object {
       "completedCount": 0,
       "email": "user@test.com",
-      "id": "VXNlcjo2Nw==",
+      "id": "VXNlcjo3Ng==",
       "todos": Object {
         "edges": null,
         "pageInfo": Object {
@@ -81,14 +81,14 @@ Object {
       "changedTodos": Array [
         Object {
           "complete": true,
-          "id": "VG9kbzoxODg=",
+          "id": "VG9kbzoxOTg=",
           "text": "Get A Customer 1",
         },
       ],
       "clientMutationId": "4",
       "user": Object {
         "completedCount": 1,
-        "id": "VXNlcjo2Nw==",
+        "id": "VXNlcjo3Ng==",
         "totalCount": 1,
       },
     },
@@ -105,13 +105,13 @@ Object {
       "clientMutationId": "5.0",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzoxODE=",
+        "id": "VG9kbzoxOTg=",
         "text": "Get A Customer 1",
       },
       "user": Object {
         "completedCount": 0,
         "email": "user@test.com",
-        "id": "VXNlcjo2Mg==",
+        "id": "VXNlcjo3Ng==",
         "totalCount": 1,
       },
     },
@@ -128,13 +128,13 @@ Object {
       "clientMutationId": "6.0",
       "todo": Object {
         "complete": true,
-        "id": "VG9kbzoxODE=",
+        "id": "VG9kbzoxOTg=",
         "text": "Get A Customer 1",
       },
       "user": Object {
         "completedCount": 1,
         "email": "user@test.com",
-        "id": "VXNlcjo2Mg==",
+        "id": "VXNlcjo3Ng==",
         "totalCount": 1,
       },
     },
@@ -150,11 +150,11 @@ Object {
     "clearCompletedTodos": Object {
       "clientMutationId": "7",
       "deletedTodoIds": Array [
-        "VG9kbzoxODE=",
+        "VG9kbzoxOTg=",
       ],
       "user": Object {
         "completedCount": 0,
-        "id": "VXNlcjo2Mg==",
+        "id": "VXNlcjo3Ng==",
         "totalCount": 0,
       },
     },
@@ -171,7 +171,7 @@ Object {
       "clientMutationId": "9.0",
       "todo": Object {
         "complete": false,
-        "id": "VG9kbzoxODE=",
+        "id": "VG9kbzoxOTg=",
         "text": "",
       },
     },
@@ -189,7 +189,7 @@ Object {
       "user": Object {
         "completedCount": 0,
         "email": "user@test.com",
-        "id": "VXNlcjo2Mg==",
+        "id": "VXNlcjo3Ng==",
         "totalCount": 1,
       },
     },
@@ -205,7 +205,7 @@ Object {
     "user": Object {
       "completedCount": 0,
       "email": "user@test.com",
-      "id": "VXNlcjo2Mg==",
+      "id": "VXNlcjo3Ng==",
       "todos": Object {
         "edges": null,
         "pageInfo": Object {
