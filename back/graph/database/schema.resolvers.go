@@ -14,6 +14,7 @@ import (
 	"github.com/akatebi/todos/graph/generated"
 	"github.com/akatebi/todos/graph/model"
 	"github.com/graphql-go/relay"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 func (r *mutationResolver) AddUser(ctx context.Context, input model.AddUserInput) (*model.AddUserPayload, error) {
@@ -254,8 +255,10 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 	}
 	log.Printf("Rows Affected %v", rowsAffected)
 	if rowsAffected == 0 {
-		err := errors.New("None existing id")
-		graphql.AddError(ctx, err)
+		err := &gqlerror.Error{
+			Path:    graphql.GetPath(ctx),
+			Message: "Non existence id",
+		}
 		return nil, err
 	}
 	todo := r.QueryTodo(ID)
