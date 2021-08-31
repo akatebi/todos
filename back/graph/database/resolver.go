@@ -147,6 +147,6 @@ func (r *Resolver) Open() {
 
 func Panic(err error) {
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 }

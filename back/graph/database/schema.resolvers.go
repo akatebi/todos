@@ -5,6 +5,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -17,15 +18,18 @@ import (
 
 func (r *mutationResolver) AddUser(ctx context.Context, input model.AddUserInput) (*model.AddUserPayload, error) {
 	log.Printf("##### AddUser #####")
-	stmt, e := r.db.Prepare("INSERT INTO user(email) VALUES(?)")
-	Panic(e)
-	res, e := stmt.Exec(input.Email)
-	if e != nil {
-		graphql.AddError(ctx, e)
+	stmt, err := r.db.Prepare("INSERT INTO user(email) VALUES(?)")
+	Panic(err)
+	res, err := stmt.Exec(input.Email)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
 	}
-	Panic(e)
-	id, e := res.LastInsertId()
-	Panic(e)
+	id, err := res.LastInsertId()
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	log.Printf("Insert User id %v", id)
 	payload := &model.AddUserPayload{
 		ID:               relay.ToGlobalID("User", strconv.FormatInt(id, 10)),
@@ -37,10 +41,17 @@ func (r *mutationResolver) AddUser(ctx context.Context, input model.AddUserInput
 func (r *mutationResolver) RemoveUser(ctx context.Context, input model.RemoveUserInput) (*model.RemoveUserPayload, error) {
 	log.Printf("##### RemoveUser #####")
 	Stmt, err := r.db.Prepare("DELETE FROM user WHERE email=?")
+	Panic(err)
 	res, err := Stmt.Exec(input.Email)
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	rowsAffected, err := res.RowsAffected()
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	log.Printf("Rows Affected %v", rowsAffected)
 	payload := &model.RemoveUserPayload{
 		ClientMutationID: input.ClientMutationID,
@@ -50,13 +61,24 @@ func (r *mutationResolver) RemoveUser(ctx context.Context, input model.RemoveUse
 
 func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput) (*model.AddTodoPayload, error) {
 	log.Printf("##### AddTodo %#v #####", input)
-	stmt, e := r.db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")
-	Panic(e)
+	stmt, err := r.db.Prepare("INSERT INTO todo(user_id, text, complete) VALUES(?,?,?)")
+	Panic(err)
+	if relay.FromGlobalID(input.UserID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	user_id := relay.FromGlobalID(input.UserID).ID
-	res, e := stmt.Exec(user_id, input.Text, false)
-	Panic(e)
-	id, e := res.LastInsertId()
-	Panic(e)
+	res, err := stmt.Exec(user_id, input.Text, false)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	log.Printf("Insert id %v", id)
 	todo := r.QueryTodo(strconv.FormatInt(id, 10))
 	user := r.QueryUser(user_id)
@@ -73,15 +95,31 @@ func (r *mutationResolver) AddTodo(ctx context.Context, input model.AddTodoInput
 
 func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.ChangeTodoStatusInput) (*model.ChangeTodoStatusPayload, error) {
 	log.Printf("##### ChangeTodoStatus #####")
+	if relay.FromGlobalID(input.ID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	obj := relay.FromGlobalID(input.ID)
 	stmt, err := r.db.Prepare("update todo set Complete=? where id=?")
 	Panic(err)
 	res, err := stmt.Exec(input.Complete, obj.ID)
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	a, err := res.RowsAffected()
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	log.Printf("Rows affected %v", a)
 	todo := r.QueryTodo(obj.ID)
+	if relay.FromGlobalID(input.UserID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	user_id := relay.FromGlobalID(input.UserID).ID
 	user := r.QueryUser(user_id)
 	payload := &model.ChangeTodoStatusPayload{
@@ -94,10 +132,18 @@ func (r *mutationResolver) ChangeTodoStatus(ctx context.Context, input model.Cha
 
 func (r *mutationResolver) ClearCompletedTodos(ctx context.Context, input model.ClearCompletedTodosInput) (*model.ClearCompletedTodosPayload, error) {
 	log.Printf("##### RemoveCompletedTodos #####")
+	if relay.FromGlobalID(input.UserID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	id := relay.FromGlobalID(input.UserID).ID
 	var deletedTodoIds []string
 	rows, err := r.db.Query("SELECT id FROM todo WHERE user_id=? AND complete=true", id)
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	for rows.Next() {
 		var id int
 		rows.Scan(&id)
@@ -105,11 +151,23 @@ func (r *mutationResolver) ClearCompletedTodos(ctx context.Context, input model.
 	}
 	defer rows.Close()
 	Stmt, err := r.db.Prepare("DELETE FROM todo WHERE user_id=? AND complete=true")
+	Panic(err)
 	res, err := Stmt.Exec(id)
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	rowsAffected, err := res.RowsAffected()
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	log.Printf("Rows Affected %v", rowsAffected)
+	if relay.FromGlobalID(input.UserID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	user_id := relay.FromGlobalID(input.UserID).ID
 	user := r.QueryUser(user_id)
 	payload := &model.ClearCompletedTodosPayload{
@@ -122,6 +180,11 @@ func (r *mutationResolver) ClearCompletedTodos(ctx context.Context, input model.
 
 func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAllTodosInput) (*model.MarkAllTodosPayload, error) {
 	log.Printf("##### MarkAllTodos #####")
+	if relay.FromGlobalID(input.UserID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	user_id := relay.FromGlobalID(input.UserID).ID
 	changedTodos := r.QueryMarkAllTodos(user_id, input.Complete)
 	user := r.QueryUser(user_id)
@@ -135,13 +198,30 @@ func (r *mutationResolver) MarkAllTodos(ctx context.Context, input model.MarkAll
 
 func (r *mutationResolver) RemoveTodo(ctx context.Context, input model.RemoveTodoInput) (*model.RemoveTodoPayload, error) {
 	log.Printf("##### RemoveTodo #####")
+	if relay.FromGlobalID(input.ID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	id := relay.FromGlobalID(input.ID).ID
 	Stmt, err := r.db.Prepare("DELETE FROM todo WHERE id=?")
+	Panic(err)
 	res, err := Stmt.Exec(id)
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	rowsAffected, err := res.RowsAffected()
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	log.Printf("Rows Affected %v", rowsAffected)
+	if relay.FromGlobalID(input.UserID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	user_id := relay.FromGlobalID(input.UserID).ID
 	user := r.QueryUser(user_id)
 	payload := &model.RemoveTodoPayload{
@@ -153,14 +233,25 @@ func (r *mutationResolver) RemoveTodo(ctx context.Context, input model.RemoveTod
 }
 
 func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTodoInput) (*model.RenameTodoPayload, error) {
-	ID := relay.FromGlobalID(input.ID).ID
 	log.Printf("##### RenameTodo #####")
+	if relay.FromGlobalID(input.ID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
+	ID := relay.FromGlobalID(input.ID).ID
 	Stmt, err := r.db.Prepare("UPDATE todo SET text=? WHERE id=?")
 	Panic(err)
 	res, err := Stmt.Exec(input.Text, ID)
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	rowsAffected, err := res.RowsAffected()
-	Panic(err)
+	if err != nil {
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	log.Printf("Rows Affected %v", rowsAffected)
 	todo := r.QueryTodo(ID)
 	log.Printf("Todo %v", todo)
@@ -192,6 +283,11 @@ func (r *queryResolver) User(ctx context.Context, email *string) (*model.User, e
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
 	log.Printf("##### Node %v #####", id)
 	obj := relay.FromGlobalID(id)
+	if obj == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	if obj.Type == "User" {
 		return r.QueryUser(obj.ID), nil
 	} else if obj.Type == "Todo" {
@@ -202,6 +298,11 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 
 func (r *userResolver) Todos(ctx context.Context, obj *model.User, status *model.Status, after *string, first *int, before *string, last *int) (*model.TodoConnection, error) {
 	log.Printf("##### Todos Connection #####")
+	if relay.FromGlobalID(obj.ID) == nil {
+		err := errors.New("id is corrupt")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	user_id := relay.FromGlobalID(obj.ID).ID
 	after_ := DecodeCursor(after)
 	before_ := DecodeCursor(before)

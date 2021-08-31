@@ -83,7 +83,6 @@ describe("Todos GraphQL", () => {
             const resp = await renameTodo({ id, text, clientMutationId: cid });
             expect(resp).toMatchSnapshot();
         }
-        
 
         clientMutationId = "10";
         for (let i = 0; i < count; i++) {
