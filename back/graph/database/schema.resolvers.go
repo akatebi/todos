@@ -253,6 +253,11 @@ func (r *mutationResolver) RenameTodo(ctx context.Context, input model.RenameTod
 		return nil, err
 	}
 	log.Printf("Rows Affected %v", rowsAffected)
+	if rowsAffected == 0 {
+		err := errors.New("None existing id")
+		graphql.AddError(ctx, err)
+		return nil, err
+	}
 	todo := r.QueryTodo(ID)
 	log.Printf("Todo %v", todo)
 	payload := &model.RenameTodoPayload{
