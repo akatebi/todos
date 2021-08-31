@@ -457,15 +457,16 @@ Object {
 exports[`Todos GraphQL Query & Mutation 30`] = `
 Object {
   "data": Object {
-    "renameTodo": Object {
-      "clientMutationId": "9.0",
-      "todo": Object {
-        "complete": false,
-        "id": "VG9kbzo2",
-        "text": "",
-      },
-    },
+    "renameTodo": null,
   },
+  "errors": Array [
+    Object {
+      "message": "Non existence id",
+      "path": Array [
+        "renameTodo",
+      ],
+    },
+  ],
 }
 `;
 
