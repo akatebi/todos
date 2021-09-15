@@ -26,7 +26,7 @@ func main() {
 	}
 
 	CORS := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedOrigins:   []string{"http://localhost:3001"},
 		AllowCredentials: true,
 	})
 
