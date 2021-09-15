@@ -52,7 +52,7 @@ export default function useClearCompleteTodosMutation() {
         return commit({
           variables: { input },
           updater: (store: RecordSourceSelectorProxy) => {
-            const payload = store.getRootField("removeCompletedTodos");
+            const payload = store.getRootField("clearCompletedTodos");
             if (!payload) {
               return;
             }
