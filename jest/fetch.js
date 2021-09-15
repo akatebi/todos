@@ -5,7 +5,7 @@ const nodeFetch = require('node-fetch');
     expect("\n==================================================")
         .toMatchSnapshot();
     expect({ query, variables }).toMatchSnapshot();
-    const resp = await nodeFetch('http://localhost:8080/query', {
+    const resp = await nodeFetch('http://localhost:8081/query', {
             method: 'post',
             body: JSON.stringify({query, variables}),
             headers: { 'Content-Type': 'application/json' },

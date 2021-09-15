@@ -4,15 +4,15 @@
 
 import { ConcreteRequest } from "relay-runtime";
 
-export type RemoveCompletedTodosInput = {
+export type ClearCompletedTodosInput = {
     userId: string;
     clientMutationId?: string | null;
 };
 export type useClearCompleteTodosMutationVariables = {
-    input: RemoveCompletedTodosInput;
+    input: ClearCompletedTodosInput;
 };
 export type useClearCompleteTodosMutationResponse = {
-    readonly removeCompletedTodos: {
+    readonly clearCompletedTodos: {
         readonly deletedTodoIds: ReadonlyArray<string> | null;
         readonly user: {
             readonly completedCount: number;
@@ -29,9 +29,9 @@ export type useClearCompleteTodosMutation = {
 
 /*
 mutation useClearCompleteTodosMutation(
-  $input: RemoveCompletedTodosInput!
+  $input: ClearCompletedTodosInput!
 ) {
-  removeCompletedTodos(input: $input) {
+  clearCompletedTodos(input: $input) {
     deletedTodoIds
     user {
       completedCount
@@ -88,9 +88,9 @@ return {
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "RemoveCompletedTodosPayload",
+        "concreteType": "ClearCompletedTodosPayload",
         "kind": "LinkedField",
-        "name": "removeCompletedTodos",
+        "name": "clearCompletedTodos",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -123,9 +123,9 @@ return {
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "RemoveCompletedTodosPayload",
+        "concreteType": "ClearCompletedTodosPayload",
         "kind": "LinkedField",
-        "name": "removeCompletedTodos",
+        "name": "clearCompletedTodos",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -155,14 +155,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "27dc610ba0a989b698543a810eb6b5c3",
+    "cacheID": "f9d07553b9b1e6139c3c8fa90c095ec3",
     "id": null,
     "metadata": {},
     "name": "useClearCompleteTodosMutation",
     "operationKind": "mutation",
-    "text": "mutation useClearCompleteTodosMutation(\n  $input: RemoveCompletedTodosInput!\n) {\n  removeCompletedTodos(input: $input) {\n    deletedTodoIds\n    user {\n      completedCount\n      totalCount\n      id\n    }\n  }\n}\n"
+    "text": "mutation useClearCompleteTodosMutation(\n  $input: ClearCompletedTodosInput!\n) {\n  clearCompletedTodos(input: $input) {\n    deletedTodoIds\n    user {\n      completedCount\n      totalCount\n      id\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '108eada9e88d6bded77850429cae6cd1';
+(node as any).hash = 'c281eb9a4ae7be8c62330b4286a19aa3';
 export default node;

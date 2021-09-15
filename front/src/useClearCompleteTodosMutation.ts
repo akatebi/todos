@@ -1,13 +1,13 @@
 import { useMutation } from "react-relay";
 import { useCallback } from "react";
 import { ConnectionHandler, RecordSourceSelectorProxy } from "relay-runtime";
-import { RemoveCompletedTodosInput } from "./__generated__/useClearCompleteTodosMutation.graphql";
+import { ClearCompletedTodosInput } from "./__generated__/useClearCompleteTodosMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
 const mutation = graphql`
-  mutation useClearCompleteTodosMutation($input: RemoveCompletedTodosInput!) {
-    removeCompletedTodos(input: $input) {
+  mutation useClearCompleteTodosMutation($input: ClearCompletedTodosInput!) {
+    clearCompletedTodos(input: $input) {
       deletedTodoIds
       user {
         completedCount
@@ -45,7 +45,7 @@ export default function useClearCompleteTodosMutation() {
   return [
     useCallback(
       (userId: string, completedIds: Array<string | null | undefined>) => {
-        const input: RemoveCompletedTodosInput = {
+        const input: ClearCompletedTodosInput = {
           userId: userId
         };
 

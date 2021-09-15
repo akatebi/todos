@@ -21,7 +21,7 @@ async function fetchRelay(
   // console.log(params.text?.replace("\n", ""));
   // console.log(variables);
   // Fetch data from GitHub's GraphQL API:
-  const response = await fetch("http://localhost:8080/query", {
+  const response = await fetch("http://localhost:8081/query", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

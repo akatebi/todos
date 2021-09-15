@@ -7,6 +7,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"time"
 	"log"
 	"strconv"
 
@@ -74,6 +75,8 @@ func (r *Resolver) Open() {
 		panic(err)
 	}
 	log.Printf("### db ###, %v", db)
+
+	time.Sleep(2 * time.Second)
 
 	err = db.Ping()
 	Panic(err)
