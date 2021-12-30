@@ -70,9 +70,9 @@ export default function Todo(props: Props) {
   const handleTextInputSave = useCallback(
     (text: string) => {
       setIsEditing(false);
-      renameTodoMutation(text, todo.id);
+      renameTodoMutation(text, todo.id, user.id);
     },
-    [renameTodoMutation, todo.id]
+    [renameTodoMutation, todo.id, user.id]
   );
 
   return (

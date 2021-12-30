@@ -20,8 +20,8 @@ model:
 # Where should the resolver implementations go?
 resolver:
   layout: follow-schema
-  dir: graph/database
-  package: database
+  dir: graph/myfirebase
+  package: myfirebase
 
 # Optional: turn on use `gqlgen:"fieldName"` tags in your models
 # struct_tag: json

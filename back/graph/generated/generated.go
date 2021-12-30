@@ -650,7 +650,7 @@ type TodoEdge {
   cursor: String!
 }
 
-type Todo implements Node {
+type Todo {
   id: ID!
   text: String!
   complete: Boolean!
@@ -748,6 +748,7 @@ type RemoveTodoPayload {
 
 input RenameTodoInput {
   id: ID!
+  userId: ID!
   text: String!
   clientMutationId: String
 }
@@ -4043,6 +4044,14 @@ func (ec *executionContext) unmarshalInputRenameTodoInput(ctx context.Context, o
 			if err != nil {
 				return it, err
 			}
+		case "userId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+			it.UserID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "text":
 			var err error
 
@@ -4080,13 +4089,6 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._User(ctx, sel, obj)
-	case model.Todo:
-		return ec._Todo(ctx, sel, &obj)
-	case *model.Todo:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._Todo(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}
@@ -4472,7 +4474,7 @@ func (ec *executionContext) _RenameTodoPayload(ctx context.Context, sel ast.Sele
 	return out
 }
 
-var todoImplementors = []string{"Todo", "Node"}
+var todoImplementors = []string{"Todo"}
 
 func (ec *executionContext) _Todo(ctx context.Context, sel ast.SelectionSet, obj *model.Todo) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, todoImplementors)

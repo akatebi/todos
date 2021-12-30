@@ -100,6 +100,7 @@ type RemoveUserPayload struct {
 
 type RenameTodoInput struct {
 	ID               string  `json:"id"`
+	UserID           string  `json:"userId"`
 	Text             string  `json:"text"`
 	ClientMutationID *string `json:"clientMutationId"`
 }
@@ -114,8 +115,6 @@ type Todo struct {
 	Text     string `json:"text"`
 	Complete bool   `json:"complete"`
 }
-
-func (Todo) IsNode() {}
 
 type TodoConnection struct {
 	PageInfo *PageInfo   `json:"pageInfo"`

@@ -10,8 +10,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/akatebi/todos/graph/database"
 	"github.com/akatebi/todos/graph/generated"
+	"github.com/akatebi/todos/graph/myfirebase"
 	"github.com/go-chi/chi"
 	"github.com/rs/cors"
 )
@@ -26,11 +26,11 @@ func main() {
 	}
 
 	CORS := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3001"},
+		AllowedOrigins:   []string{"http://localhost:3000", "https://todos-2eef4.web.app"},
 		AllowCredentials: true,
 	})
 
-	resolver := &database.Resolver{}
+	resolver := &myfirebase.Resolver{}
 	resolver.Open()
 	defer resolver.Close()
 
@@ -81,3 +81,5 @@ func printBody(r *http.Request) {
 	reader := ioutil.NopCloser(bytes.NewBuffer(buf))
 	r.Body = reader
 }
+
+// gcloud run deploy back --project todos-2eef4 --source .

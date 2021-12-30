@@ -37,7 +37,7 @@ type TodoEdge {
   cursor: String!
 }
 
-type Todo implements Node {
+type Todo {
   id: ID!
   text: String!
   complete: Boolean!
@@ -135,6 +135,7 @@ type RemoveTodoPayload {
 
 input RenameTodoInput {
   id: ID!
+  userId: ID!
   text: String!
   clientMutationId: String
 }

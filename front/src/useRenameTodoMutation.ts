@@ -36,10 +36,11 @@ export default function useRenameTodoMutation() {
   const [commit] = useMutation(mutation);
   return [
     useCallback(
-      (text: string, todoId: string) => {
+      (text: string, todoId: string, userId: string) => {
         const input: RenameTodoInput = {
           text,
-          id: todoId
+          id: todoId,
+          userId: userId,
         };
 
         return commit({

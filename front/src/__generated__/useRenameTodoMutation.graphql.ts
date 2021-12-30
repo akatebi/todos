@@ -6,6 +6,7 @@ import { ConcreteRequest } from "relay-runtime";
 
 export type RenameTodoInput = {
     id: string;
+    userId: string;
     text: string;
     clientMutationId?: string | null;
 };

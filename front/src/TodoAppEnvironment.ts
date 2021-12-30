@@ -21,10 +21,13 @@ async function fetchRelay(
   // console.log(params.text?.replace("\n", ""));
   // console.log(variables);
   // Fetch data from GitHub's GraphQL API:
-  const response = await fetch("http://localhost:8081/query", {
+  const HOST = process.env.NODE_ENV === "production" ? 
+    "https://back-y34egxfhvq-uw.a.run.app" :  "http://localhost:8080";
+  console.log("#### HOST", HOST);
+  const response = await fetch(`${HOST}/query`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       query: params.text,

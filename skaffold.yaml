@@ -17,7 +17,7 @@ deploy:
     manifests:
     - back/deployment.yaml
     - front/deployment.yaml
-    - db/mysql.yaml
+    # - db/mysql.yaml
     # - db/postgres.yaml
     # - db/cockroach.yaml
 portForward:
